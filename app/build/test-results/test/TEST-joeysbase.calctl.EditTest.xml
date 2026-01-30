@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="joeysbase.calctl.EditTest" tests="7" skipped="0" failures="0" errors="0" timestamp="2026-01-30T19:56:10.776Z" hostname="ishis-MacBook-Air.local" time="0.121">
+  <properties/>
+  <testcase name="testRunWithInvalidDateFormat()" classname="joeysbase.calctl.EditTest" time="0.016"/>
+  <testcase name="testRunWithConflictsAndNoForceOption()" classname="joeysbase.calctl.EditTest" time="0.013"/>
+  <testcase name="testRunWithInvalidTimeFormat()" classname="joeysbase.calctl.EditTest" time="0.017"/>
+  <testcase name="testRunWithConflictsAndForceOption()" classname="joeysbase.calctl.EditTest" time="0.02"/>
+  <testcase name="testRunWithNonExistentEventId()" classname="joeysbase.calctl.EditTest" time="0.007"/>
+  <testcase name="testRunWithValidDateAndTime()" classname="joeysbase.calctl.EditTest" time="0.028"/>
+  <testcase name="testRunWithValidIdAndNoConflicts()" classname="joeysbase.calctl.EditTest" time="0.017"/>
+  <system-out><![CDATA[Event added successfully.
+│Title          │Start Datetime │Duration       │Description    │Location      │
+│Meeting        │2023-10-10T14:0│1h30m          │Team meeting   │Conference    │
+│               │0              │               │               │Room          │
+Event added successfully.
+│Title          │Start Datetime │Duration       │Description    │Location      │
+│Meeting2       │2026-01-28T14:0│1h30m          │Team meeting   │Conference    │
+│               │0              │               │               │Room          │
+Event added successfully.
+│Title          │Start Datetime │Duration       │Description    │Location      │
+│Meeting        │2023-10-10T14:0│1h30m          │Team meeting   │Conference    │
+│               │0              │               │               │Room          │
+Event added successfully.
+│Title          │Start Datetime │Duration       │Description    │Location      │
+│Meeting2       │2026-01-28T14:0│1h30m          │Team meeting   │Conference    │
+│               │0              │               │               │Room          │
+Event added successfully.
+│Title          │Start Datetime │Duration       │Description    │Location      │
+│Meeting        │2023-10-10T14:0│1h30m          │Team meeting   │Conference    │
+│               │0              │               │               │Room          │
+Event added successfully.
+│Title          │Start Datetime │Duration       │Description    │Location      │
+│Meeting2       │2026-01-28T14:0│1h30m          │Team meeting   │Conference    │
+│               │0              │               │               │Room          │
+Event added successfully.
+│Title          │Start Datetime │Duration       │Description    │Location      │
+│Meeting        │2023-10-10T14:0│1h30m          │Team meeting   │Conference    │
+│               │0              │               │               │Room          │
+Event added successfully.
+│Title          │Start Datetime │Duration       │Description    │Location      │
+│Meeting2       │2026-01-28T14:0│1h30m          │Team meeting   │Conference    │
+│               │0              │               │               │Room          │
+Warning: --force option is set. Skipping event conflicts checking.
+The event with ID "evt-931530237" was updated successfully.
+│ID       │Title    │Start    │Duration │Descripti│Location │Created  │Updated │
+│         │         │Datetime │         │on       │         │At       │At      │
+│evt-93153│new      │2026-01-2│1h30m    │Team     │Conferenc│2026-01-3│2026-01-│
+│0237     │Meeting  │8T14:00  │         │meeting  │e Room   │0T11:56:1│30T11:56│
+│         │         │         │         │         │         │0        │:10.8409│
+│         │         │         │         │         │         │         │69      │
+Event added successfully.
+│Title          │Start Datetime │Duration       │Description    │Location      │
+│Meeting        │2023-10-10T14:0│1h30m          │Team meeting   │Conference    │
+│               │0              │               │               │Room          │
+Event added successfully.
+│Title          │Start Datetime │Duration       │Description    │Location      │
+│Meeting2       │2026-01-28T14:0│1h30m          │Team meeting   │Conference    │
+│               │0              │               │               │Room          │
+Event added successfully.
+│Title          │Start Datetime │Duration       │Description    │Location      │
+│Meeting        │2023-10-10T14:0│1h30m          │Team meeting   │Conference    │
+│               │0              │               │               │Room          │
+Event added successfully.
+│Title          │Start Datetime │Duration       │Description    │Location      │
+│Meeting2       │2026-01-28T14:0│1h30m          │Team meeting   │Conference    │
+│               │0              │               │               │Room          │
+The event with ID "evt-931530237" was updated successfully.
+│ID       │Title    │Start    │Duration │Descripti│Location │Created  │Updated │
+│         │         │Datetime │         │on       │         │At       │At      │
+│evt-93153│new      │2026-01-2│1h30m    │Team     │Conferenc│2026-01-3│2026-01-│
+│0237     │Meeting  │9T14:00  │         │meeting  │e Room   │0T11:56:1│30T11:56│
+│         │         │         │         │         │         │0        │:10.8769│
+│         │         │         │         │         │         │         │56      │
+Event added successfully.
+│Title          │Start Datetime │Duration       │Description    │Location      │
+│Meeting        │2023-10-10T14:0│1h30m          │Team meeting   │Conference    │
+│               │0              │               │               │Room          │
+Event added successfully.
+│Title          │Start Datetime │Duration       │Description    │Location      │
+│Meeting2       │2026-01-28T14:0│1h30m          │Team meeting   │Conference    │
+│               │0              │               │               │Room          │
+The event with ID "evt-931530237" was updated successfully.
+│ID       │Title    │Start    │Duration │Descripti│Location │Created  │Updated │
+│         │         │Datetime │         │on       │         │At       │At      │
+│evt-93153│new      │2027-12-1│1h30m    │Team     │Conferenc│2026-01-3│2026-01-│
+│0237     │Meeting  │0T14:00  │         │meeting  │e Room   │0T11:56:1│30T11:56│
+│         │         │         │         │         │         │0        │:10.8951│
+│         │         │         │         │         │         │         │22      │
+]]></system-out>
+  <system-err><![CDATA[Error: Invalid date format "2027-12*10". Please use YYYY-MM-DD.
+Error: The edited event conflicts with the following events:
+- "Meeting2" (2026-01-28T14:00 -> 2026-01-28T15:30)
+
+Consider using calctl --force option to edit anyway.
+Error: Invalid time format "2 PM". Please use HH:MM.
+Error: No event found with ID "evt-930237".
+]]></system-err>
+</testsuite>

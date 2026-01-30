@@ -1,0 +1,235 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Delete.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">app</a> &gt; <a href="index.source.html" class="el_package">joeysbase.calctl</a> &gt; <span class="el_source">Delete.java</span></div><h1>Delete.java</h1><pre class="source lang-java linenums">package joeysbase.calctl;
+
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.Callable;
+
+import picocli.CommandLine.Command;
+import picocli.CommandLine.Option;
+import picocli.CommandLine.Parameters;
+import picocli.CommandLine.ParentCommand;
+
+/**
+ * The Delete command is responsible for removing events from the calendar. It supports deletion by
+ * event ID or by date, with options for dry-run and confirmation prompts.
+ *
+ * &lt;p&gt;Usage:
+ *
+ * &lt;ul&gt;
+ *   &lt;li&gt;Delete by event ID: &lt;code&gt;calctl delete EVENTID&lt;/code&gt;
+ *   &lt;li&gt;Delete by date: &lt;code&gt;calctl delete --date YYYY-MM-DD&lt;/code&gt;
+ * &lt;/ul&gt;
+ *
+ * &lt;p&gt;Options:
+ *
+ * &lt;ul&gt;
+ *   &lt;li&gt;&lt;code&gt;--date&lt;/code&gt;: Specify the date of the event(s) to delete in YYYY-MM-DD format.
+ *   &lt;li&gt;&lt;code&gt;--dry-run&lt;/code&gt;: Simulate the delete operation without making any changes.
+ *   &lt;li&gt;&lt;code&gt;--force&lt;/code&gt;: Skip confirmation prompts (inherited from the parent command).
+ * &lt;/ul&gt;
+ *
+ * &lt;p&gt;Behavior:
+ *
+ * &lt;ul&gt;
+ *   &lt;li&gt;If an event ID is provided, the command attempts to delete the event with the specified ID.
+ *   &lt;li&gt;If a date is provided, the command attempts to delete all events on that date.
+ *   &lt;li&gt;If neither an ID nor a date is provided, an error message is displayed.
+ *   &lt;li&gt;Confirmation prompts are displayed unless the &lt;code&gt;--force&lt;/code&gt; option is used.
+ *   &lt;li&gt;In dry-run mode, no changes are made, but the events to be deleted are displayed.
+ * &lt;/ul&gt;
+ *
+ * &lt;p&gt;Error Handling:
+ *
+ * &lt;ul&gt;
+ *   &lt;li&gt;If no event is found with the specified ID or date, an error message is displayed.
+ *   &lt;li&gt;If the date format is invalid, an error message is displayed.
+ *   &lt;li&gt;If user input cannot be read during confirmation, an error message is displayed.
+ * &lt;/ul&gt;
+ *
+ * &lt;p&gt;Examples:
+ *
+ * &lt;pre&gt;
+ *   calctl delete 12345
+ *   calctl delete --date 2023-10-15
+ *   calctl delete 12345 --dry-run
+ *   calctl delete --date 2023-10-15 --force
+ * &lt;/pre&gt;
+ */
+@Command(
+    name = &quot;delete&quot;,
+    description = &quot;delete an event from the calendar&quot;,
+    mixinStandardHelpOptions = true)
+@SuppressWarnings(&quot;PMD&quot;)
+<span class="fc" id="L66">class Delete implements Callable&lt;Integer&gt; {</span>
+
+  @ParentCommand CalendarControl calendarControl;
+
+  @Parameters(index = &quot;0&quot;, description = &quot;ID of the event to delete.&quot;, defaultValue = &quot;&quot;)
+  String id;
+
+  @Option(
+      names = {&quot;--date&quot;},
+      description = &quot;Date of the event to be deleted in YYYY-MM-DD format.&quot;,
+      paramLabel = &quot;DATE&quot;,
+      defaultValue = &quot;&quot;)
+  String date;
+
+  @Option(
+      names = {&quot;--dry-run&quot;},
+      description = &quot;Simulate the delete operation without making any changes.&quot;,
+      defaultValue = &quot;false&quot;)
+  boolean dryRun;
+
+  /**
+   * Executes the delete operation for events in the calendar.
+   *
+   * &lt;p&gt;This method performs the following: - Deletes an event by its unique ID if the `id` field is
+   * not empty. - Deletes all events on a specific date if the `date` field is not empty. - Prompts
+   * the user for confirmation unless the `force` flag is set to true. - Supports a dry-run mode
+   * where no actual changes are made.
+   *
+   * &lt;p&gt;Behavior: - If an event ID is provided: - Finds the event by its ID. - If the event is not
+   * found, prints an error message and exits. - If the event is found, prompts for confirmation
+   * (unless `force` is true). - Deletes the event and optionally writes changes to a file. - If a
+   * date is provided: - Validates the date format. - Finds all events on the specified date. - If
+   * no events are found, prints an error message and exits. - If events are found, prompts for
+   * confirmation (unless `force` is true). - Deletes the events and optionally writes changes to a
+   * file. - If neither an event ID nor a date is provided, prints an error message and exits.
+   *
+   * &lt;p&gt;Error Handling: - Handles invalid user input during confirmation prompts. - Exits with an
+   * error message if operations fail.
+   *
+   * &lt;p&gt;Preconditions: - The `id` or `date` field must be set before calling this method. - The
+   * `calendarControl` object must be properly initialized.
+   *
+   * &lt;p&gt;Postconditions: - Events matching the specified criteria are deleted, unless in dry-run
+   * mode. - Changes are persisted to a file unless in dry-run mode.
+   */
+  @Override
+  public Integer call() {
+    EventEngine eventEngine;
+    try {
+<span class="fc" id="L115">      eventEngine = EventEngine.load();</span>
+<span class="nc" id="L116">    } catch (Exception e) {</span>
+<span class="nc" id="L117">      System.err.println(&quot;Error: Unable to create event engine.&quot;);</span>
+<span class="nc" id="L118">      System.err.println(e.getMessage());</span>
+<span class="nc" id="L119">      return 1;</span>
+<span class="fc" id="L120">    }</span>
+<span class="pc bpc" id="L121" title="1 of 2 branches missed.">    if (eventEngine == null) {</span>
+<span class="nc" id="L122">      System.err.println(&quot;Error: Unable to initialize event engine.&quot;);</span>
+<span class="nc" id="L123">      return 1;</span>
+    }
+
+<span class="fc bfc" id="L126" title="All 2 branches covered.">    if (!id.isEmpty()) {</span>
+<span class="fc" id="L127">      Event event = eventEngine.findById(id);</span>
+<span class="fc bfc" id="L128" title="All 2 branches covered.">      if (event == null) {</span>
+<span class="fc" id="L129">        System.err.println(&quot;Error: No event found with ID &quot; + &quot;\&quot;&quot; + id + &quot;\&quot;.&quot;);</span>
+<span class="fc" id="L130">        return 1;</span>
+      } else {
+<span class="pc bpc" id="L132" title="1 of 2 branches missed.">        if (calendarControl.force == false) {</span>
+<span class="fc" id="L133">          System.out.println(&quot;Are you sure you want to delete the following event? (y/n)&quot;);</span>
+<span class="fc" id="L134">          System.out.println(&quot;You can use calctl --force to skip this confirmation.&quot;);</span>
+<span class="fc" id="L135">          System.out.println(PrettyEvent.listEvents(new ArrayList&lt;&gt;(List.of(event))));</span>
+          try {
+<span class="fc" id="L137">            int inputChar = System.in.read();</span>
+<span class="pc bpc" id="L138" title="1 of 4 branches missed.">            if (inputChar != 'y' &amp;&amp; inputChar != 'Y') {</span>
+<span class="fc" id="L139">              System.out.println(&quot;Aborting delete operation.&quot;);</span>
+<span class="fc" id="L140">              return 0;</span>
+            }
+<span class="nc" id="L142">          } catch (Exception e) {</span>
+<span class="nc" id="L143">            System.err.println(&quot;Error: Unable to read user input.&quot;);</span>
+<span class="nc" id="L144">            return 1;</span>
+<span class="fc" id="L145">          }</span>
+        }
+<span class="fc" id="L147">        boolean success = eventEngine.removeByEvent(event);</span>
+<span class="pc bpc" id="L148" title="1 of 2 branches missed.">        if (success) {</span>
+<span class="pc bpc" id="L149" title="1 of 2 branches missed.">          if (!dryRun) {</span>
+            try {
+<span class="fc" id="L151">              eventEngine.toFile();</span>
+<span class="nc" id="L152">            } catch (Exception e) {</span>
+<span class="nc" id="L153">              return 1;</span>
+<span class="fc" id="L154">            }</span>
+<span class="fc" id="L155">            System.out.println(&quot;The following events were deleted successfully.&quot;);</span>
+          } else {
+<span class="nc" id="L157">            System.out.println(&quot;Dry run enabled. No changes were made to the following events.&quot;);</span>
+          }
+<span class="fc" id="L159">          System.out.println(PrettyEvent.listEvents(new ArrayList&lt;&gt;(List.of(event))));</span>
+<span class="fc" id="L160">          return 0;</span>
+        } else {
+<span class="nc" id="L162">          System.err.println(&quot;Error: Unable to delete event with ID &quot; + &quot;\&quot;&quot; + id + &quot;\&quot;.&quot;);</span>
+<span class="nc" id="L163">          return 1;</span>
+        }
+      }
+<span class="pc bpc" id="L166" title="1 of 2 branches missed.">    } else if (!date.isEmpty()) {</span>
+<span class="fc" id="L167">      isValidDate(date);</span>
+<span class="fc" id="L168">      LocalDate localDate = LocalDate.parse(date, DateTimeFormatter.ISO_LOCAL_DATE);</span>
+<span class="fc" id="L169">      List&lt;Event&gt; eventsToDelete = eventEngine.findByDate(localDate);</span>
+<span class="fc bfc" id="L170" title="All 2 branches covered.">      if (eventsToDelete.isEmpty()) {</span>
+<span class="fc" id="L171">        System.err.println(&quot;Error: No events found on date &quot; + &quot;\&quot;&quot; + date + &quot;\&quot;.&quot;);</span>
+<span class="fc" id="L172">        return 1;</span>
+
+      } else {
+<span class="pc bpc" id="L175" title="1 of 2 branches missed.">        if (calendarControl.force == false) {</span>
+<span class="fc" id="L176">          System.out.println(&quot;Are you sure you want to delete the following events? (y/n)&quot;);</span>
+<span class="fc" id="L177">          System.out.println(&quot;You can use calctl --force to skip this confirmation.&quot;);</span>
+<span class="fc" id="L178">          System.out.println(PrettyEvent.listEvents(eventsToDelete));</span>
+          try {
+<span class="fc" id="L180">            int inputChar = System.in.read();</span>
+<span class="pc bpc" id="L181" title="1 of 4 branches missed.">            if (inputChar != 'y' &amp;&amp; inputChar != 'Y') {</span>
+<span class="fc" id="L182">              System.out.println(&quot;Aborting delete operation.&quot;);</span>
+<span class="fc" id="L183">              return 0;</span>
+            }
+<span class="nc" id="L185">          } catch (Exception e) {</span>
+<span class="nc" id="L186">            System.err.println(&quot;Error: Unable to read user input.&quot;);</span>
+<span class="nc" id="L187">            return 1;</span>
+<span class="fc" id="L188">          }</span>
+        }
+<span class="fc" id="L190">        boolean success = eventEngine.removeByDate(localDate);</span>
+<span class="pc bpc" id="L191" title="1 of 2 branches missed.">        if (success) {</span>
+<span class="fc bfc" id="L192" title="All 2 branches covered.">          if (!dryRun) {</span>
+            try {
+<span class="fc" id="L194">              eventEngine.toFile();</span>
+<span class="nc" id="L195">            } catch (Exception e) {</span>
+<span class="nc" id="L196">              return 1;</span>
+<span class="fc" id="L197">            }</span>
+<span class="fc" id="L198">            System.out.println(&quot;The following events were deleted successfully.&quot;);</span>
+          } else {
+<span class="fc" id="L200">            System.out.println(&quot;Dry run enabled. No changes were made to the following events.&quot;);</span>
+          }
+<span class="fc" id="L202">          System.out.println(PrettyEvent.listEvents(eventsToDelete));</span>
+<span class="fc" id="L203">          return 0;</span>
+        } else {
+<span class="nc" id="L205">          System.err.println(&quot;Error: Unable to delete events on date &quot; + &quot;\&quot;&quot; + date + &quot;\&quot;.&quot;);</span>
+<span class="nc" id="L206">          return 1;</span>
+        }
+      }
+    } else {
+<span class="nc" id="L210">      System.err.println(</span>
+          &quot;Error: Please provide either an event ID \&quot;calctl delete &lt;EVENTID&gt;\&quot; or a date \&quot;calctl&quot;
+              + &quot; delete --date DATE\&quot; to delete events.&quot;);
+<span class="nc" id="L213">      return 1;</span>
+    }
+  }
+
+  private static boolean isValidDate(String dateString) {
+<span class="pc bpc" id="L218" title="1 of 2 branches missed.">    if (dateString.isEmpty()) {</span>
+<span class="nc" id="L219">      return false;</span>
+    }
+    try {
+<span class="fc" id="L222">      LocalDate.parse(dateString, DateTimeFormatter.ISO_LOCAL_DATE);</span>
+<span class="fc" id="L223">    } catch (DateTimeParseException e) {</span>
+<span class="fc" id="L224">      System.err.println(</span>
+          &quot;Error: Invalid date format &quot; + &quot;\&quot;&quot; + dateString + &quot;\&quot;. &quot; + &quot;Please use YYYY-MM-DD.&quot;);
+<span class="fc" id="L226">      return false;</span>
+<span class="nc" id="L227">    } catch (Exception e) {</span>
+<span class="nc" id="L228">      System.err.println(&quot;Error: Unable to parse date.&quot;);</span>
+<span class="nc" id="L229">      System.err.println(e.getMessage());</span>
+<span class="nc" id="L230">      return false;</span>
+<span class="fc" id="L231">    }</span>
+<span class="fc" id="L232">    return true;</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span></div></body></html>

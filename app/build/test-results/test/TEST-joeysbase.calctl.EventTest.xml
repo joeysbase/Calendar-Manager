@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="joeysbase.calctl.EventTest" tests="4" skipped="0" failures="0" errors="0" timestamp="2026-01-30T19:56:10.897Z" hostname="ishis-MacBook-Air.local" time="0.009">
+  <properties/>
+  <testcase name="testCompareTo()" classname="joeysbase.calctl.EventTest" time="0.001"/>
+  <testcase name="testToJsonString()" classname="joeysbase.calctl.EventTest" time="0.005"/>
+  <testcase name="testEventConflict()" classname="joeysbase.calctl.EventTest" time="0.0"/>
+  <testcase name="testEventBuilderAndGetters()" classname="joeysbase.calctl.EventTest" time="0.001"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Agenda.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">app</a> &gt; <a href="index.source.html" class="el_package">joeysbase.calctl</a> &gt; <span class="el_source">Agenda.java</span></div><h1>Agenda.java</h1><pre class="source lang-java linenums">package joeysbase.calctl;
+
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+import java.util.List;
+import java.util.concurrent.Callable;
+
+import picocli.CommandLine.Command;
+import picocli.CommandLine.Option;
+import picocli.CommandLine.ParentCommand;
+
+/**
+ * The Agenda class is a command-line utility for viewing the agenda of events for a specific day or
+ * week. It is part of the CalendarControl application and uses the PicoCLI library for command-line
+ * parsing.
+ *
+ * &lt;p&gt;Features:
+ *
+ * &lt;ul&gt;
+ *   &lt;li&gt;View events for a specific date using the `--date` option.
+ *   &lt;li&gt;View events for the current week using the `--week` option.
+ *   &lt;li&gt;View all events if no specific option is provided.
+ * &lt;/ul&gt;
+ *
+ * &lt;p&gt;Usage:
+ *
+ * &lt;pre&gt;
+ *   agenda --date YYYY-MM-DD
+ *   agenda --week
+ * &lt;/pre&gt;
+ *
+ * &lt;p&gt;Options:
+ *
+ * &lt;ul&gt;
+ *   &lt;li&gt;`--date`: Specifies the date for which to view the agenda in `YYYY-MM-DD` format.
+ *   &lt;li&gt;`--week`: Specifies that the agenda for the current week should be displayed.
+ * &lt;/ul&gt;
+ *
+ * &lt;p&gt;Validation:
+ *
+ * &lt;ul&gt;
+ *   &lt;li&gt;The `--date` option validates the date format and ensures it is in `YYYY-MM-DD` format.
+ *   &lt;li&gt;If an invalid date is provided, an error message is displayed, and the program exits.
+ * &lt;/ul&gt;
+ *
+ * &lt;p&gt;Dependencies:
+ *
+ * &lt;ul&gt;
+ *   &lt;li&gt;Uses `java.time` for date parsing and manipulation.
+ *   &lt;li&gt;Uses `picocli` for command-line argument parsing.
+ *   &lt;li&gt;Relies on `CalendarControl` and its `eventEngine` for fetching events.
+ *   &lt;li&gt;Uses `PrettyEvent` for formatting and displaying the agenda.
+ * &lt;/ul&gt;
+ *
+ * &lt;p&gt;Exit Codes:
+ *
+ * &lt;ul&gt;
+ *   &lt;li&gt;`0`: Successful execution with or without events.
+ *   &lt;li&gt;`1`: Invalid date format or other errors during execution.
+ * &lt;/ul&gt;
+ */
+@Command(
+    name = &quot;agenda&quot;,
+    description = &quot;View the agenda for a specific day or week&quot;,
+    mixinStandardHelpOptions = true)
+@SuppressWarnings(&quot;PMD&quot;)
+<span class="fc" id="L68">class Agenda implements Callable&lt;Integer&gt; {</span>
+
+  @ParentCommand CalendarControl calendarControl;
+
+  @Option(
+      names = {&quot;--date&quot;},
+      description = &quot;The date for which to view the agenda in YYYY-MM-DD format&quot;,
+      defaultValue = &quot;&quot;,
+      paramLabel = &quot;DATE&quot;)
+  String date;
+
+  @Option(
+      names = {&quot;--week&quot;},
+      description = &quot;View the agenda for the current week&quot;)
+  boolean week;
+
+  /**
+   * Executes the agenda retrieval process based on the specified date or week flag.
+   *
+   * &lt;p&gt;This method determines the events to display based on the provided date or whether the week
+   * flag is set. If a valid date is provided, it retrieves events for that specific date. If the
+   * week flag is set, it retrieves events for the current week. If neither is specified, it
+   * retrieves all events.
+   *
+   * &lt;p&gt;The method performs the following steps:
+   *
+   * &lt;ul&gt;
+   *   &lt;li&gt;Validates the provided date.
+   *   &lt;li&gt;Retrieves events based on the date or week flag.
+   *   &lt;li&gt;Prints the events in a formatted manner using {@code PrettyEvent.showAgenda}.
+   *   &lt;li&gt;Exits the program if no events are found or after displaying the events.
+   * &lt;/ul&gt;
+   *
+   * @throws DateTimeParseException if the provided date is not in ISO_DATE_TIME format.
+   * @throws NullPointerException if the calendar control or event engine is not initialized.
+   */
+  @Override
+  public Integer call() {
+<span class="fc" id="L106">    EventEngine eventEngine = null;</span>
+    try {
+<span class="fc" id="L108">      eventEngine = EventEngine.load();</span>
+<span class="nc" id="L109">    } catch (Exception e) {</span>
+<span class="nc" id="L110">      System.err.println(&quot;Error: Unable to create event engine.&quot;);</span>
+<span class="nc" id="L111">      System.err.println(e.getMessage());</span>
+<span class="nc" id="L112">      return 1;</span>
+<span class="fc" id="L113">    }</span>
+<span class="pc bpc" id="L114" title="1 of 2 branches missed.">    if (eventEngine == null) {</span>
+<span class="nc" id="L115">      System.err.println(&quot;Error: Unable to initialize event engine.&quot;);</span>
+<span class="nc" id="L116">      return 1;</span>
+    }
+
+<span class="fc bfc" id="L119" title="All 2 branches covered.">    if (!isValidDate(date)) {</span>
+<span class="fc" id="L120">      return 1;</span>
+    }
+    List&lt;Event&gt; events;
+<span class="fc bfc" id="L123" title="All 2 branches covered.">    if (!date.isEmpty()) {</span>
+<span class="fc" id="L124">      LocalDate agendaDate = LocalDate.parse(date, DateTimeFormatter.ISO_LOCAL_DATE);</span>
+<span class="fc" id="L125">      events = eventEngine.findByDate(agendaDate);</span>
+<span class="fc bfc" id="L126" title="All 2 branches covered.">    } else if (week) {</span>
+<span class="fc" id="L127">      int dayOfWeekValue = LocalDate.now().getDayOfWeek().getValue();</span>
+<span class="fc" id="L128">      LocalDate weekStart = LocalDate.now().minusDays(dayOfWeekValue - 1);</span>
+<span class="fc" id="L129">      LocalDate weekEnd = weekStart.plusDays(6);</span>
+<span class="fc" id="L130">      events = eventEngine.findByDateRange(weekStart, weekEnd);</span>
+<span class="fc" id="L131">    } else {</span>
+<span class="fc" id="L132">      events = eventEngine.getAllEvents();</span>
+    }
+
+<span class="fc bfc" id="L135" title="All 2 branches covered.">    if (events.isEmpty()) {</span>
+<span class="fc" id="L136">      System.out.println(&quot;No events found.&quot;);</span>
+<span class="fc" id="L137">      return 0;</span>
+    }
+<span class="fc" id="L139">    System.out.println(PrettyEvent.showAgenda(events));</span>
+<span class="fc" id="L140">    return 0;</span>
+  }
+
+  private static boolean isValidDate(String dateString) {
+<span class="fc bfc" id="L144" title="All 2 branches covered.">    if (dateString.isEmpty()) {</span>
+<span class="fc" id="L145">      return true;</span>
+    }
+    try {
+<span class="fc" id="L148">      LocalDate.parse(dateString, DateTimeFormatter.ISO_LOCAL_DATE);</span>
+<span class="fc" id="L149">    } catch (DateTimeParseException e) {</span>
+<span class="fc" id="L150">      System.err.println(</span>
+          &quot;Error: Invalid date format &quot; + &quot;\&quot;&quot; + dateString + &quot;\&quot;. &quot; + &quot;Please use YYYY-MM-DD.&quot;);
+<span class="fc" id="L152">      return false;</span>
+<span class="nc" id="L153">    } catch (Exception e) {</span>
+<span class="nc" id="L154">      System.err.println(&quot;Error: Unable to parse date.&quot;);</span>
+<span class="nc" id="L155">      System.err.println(e.getMessage());</span>
+<span class="nc" id="L156">      return false;</span>
+<span class="fc" id="L157">    }</span>
+<span class="fc" id="L158">    return true;</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span></div></body></html>

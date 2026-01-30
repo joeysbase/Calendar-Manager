@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Search.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">app</a> &gt; <a href="index.source.html" class="el_package">joeysbase.calctl</a> &gt; <span class="el_source">Search.java</span></div><h1>Search.java</h1><pre class="source lang-java linenums">package joeysbase.calctl;
+
+import java.util.List;
+import java.util.concurrent.Callable;
+
+import picocli.CommandLine.Command;
+import picocli.CommandLine.Option;
+import picocli.CommandLine.Parameters;
+
+/**
+ * The {@code Search} class is a command-line utility for searching events in a calendar. It
+ * supports searching for events based on keywords in their titles and descriptions.
+ *
+ * &lt;p&gt;This class is part of a command-line application and is annotated with the {@code @Command}
+ * annotation to define its name, description, and help options. It provides two modes of search:
+ *
+ * &lt;ul&gt;
+ *   &lt;li&gt;Search in event titles only using the {@code --title} option.
+ *   &lt;li&gt;Search in both event titles and descriptions using a keyword.
+ * &lt;/ul&gt;
+ *
+ * &lt;p&gt;Usage examples:
+ *
+ * &lt;ul&gt;
+ *   &lt;li&gt;{@code calctl search &lt;KEYWORD&gt;} - Searches for events with the specified keyword in their
+ *       titles and descriptions.
+ *   &lt;li&gt;{@code calctl search --title &lt;TITLE&gt;} - Searches for events with the specified keyword in
+ *       their titles only.
+ * &lt;/ul&gt;
+ *
+ * &lt;p&gt;If no results are found, an appropriate message is displayed. If neither a keyword nor a title
+ * keyword is provided, an error message is displayed, and the program exits with a non-zero status
+ * code.
+ *
+ * &lt;p&gt;Dependencies:
+ *
+ * &lt;ul&gt;
+ *   &lt;li&gt;{@code CalendarControl} - The parent command that provides access to the event engine.
+ *   &lt;li&gt;{@code Event} - Represents an event in the calendar.
+ *   &lt;li&gt;{@code PrettyEvent} - Utility class for formatting event details for display.
+ * &lt;/ul&gt;
+ *
+ * &lt;p&gt;Annotations:
+ *
+ * &lt;ul&gt;
+ *   &lt;li&gt;{@code @ParentCommand} - Links this command to its parent command.
+ *   &lt;li&gt;{@code @Parameters} - Defines the main keyword parameter for searching.
+ *   &lt;li&gt;{@code @Option} - Defines the optional title keyword parameter for searching in titles
+ *       only.
+ * &lt;/ul&gt;
+ *
+ * &lt;p&gt;Exit Codes:
+ *
+ * &lt;ul&gt;
+ *   &lt;li&gt;{@code 0} - Successful execution with results or no results.
+ *   &lt;li&gt;{@code 1} - Error due to missing required parameters.
+ * &lt;/ul&gt;
+ *
+ * @author Your Name
+ * @version 1.0
+ */
+@Command(
+    name = &quot;search&quot;,
+    description = &quot;Search for events in the calendar&quot;,
+    mixinStandardHelpOptions = true)
+@SuppressWarnings(&quot;PMD&quot;)
+<span class="fc" id="L67">class Search implements Callable&lt;Integer&gt; {</span>
+
+  // @ParentCommand CalendarControl calendarControl;
+
+  @Parameters(
+      index = &quot;0&quot;,
+      description = &quot;Keyword to search for in event titles and descriptions.&quot;,
+      defaultValue = &quot;&quot;)
+  String keyword;
+
+  @Option(
+      names = {&quot;--title&quot;},
+      description = &quot;Search only in event titles.&quot;,
+      defaultValue = &quot;&quot;)
+  String titleKeyword;
+
+  /**
+   * Executes the search operation based on the provided keywords.
+   *
+   * &lt;p&gt;This method performs a search for events in a calendar system. It supports two types of
+   * searches:
+   *
+   * &lt;ul&gt;
+   *   &lt;li&gt;Search by title keyword: If a title keyword is provided, it searches for events with
+   *       titles containing the specified keyword.
+   *   &lt;li&gt;Search by general keyword: If a general keyword is provided, it searches for events with
+   *       titles or descriptions containing the specified keyword.
+   * &lt;/ul&gt;
+   *
+   * &lt;p&gt;If no keyword is provided, an error message is displayed.
+   *
+   * &lt;p&gt;The method outputs the search results in a detailed format if matches are found. If no
+   * matches are found, it outputs an appropriate message and exits the program.
+   *
+   * &lt;p&gt;Usage examples:
+   *
+   * &lt;ul&gt;
+   *   &lt;li&gt;Search in title only: &lt;code&gt;calctl search --title TITLE&lt;/code&gt;
+   *   &lt;li&gt;Search in title and description: &lt;code&gt;calctl search KEYWORD&lt;/code&gt;
+   * &lt;/ul&gt;
+   *
+   * &lt;p&gt;Exit codes:
+   *
+   * &lt;ul&gt;
+   *   &lt;li&gt;0: Successful execution (results found or no results).
+   *   &lt;li&gt;1: Error due to missing keyword.
+   * &lt;/ul&gt;
+   */
+  @Override
+  public Integer call() {
+    EventEngine eventEngine;
+    try {
+<span class="fc" id="L119">      eventEngine = EventEngine.load();</span>
+<span class="nc" id="L120">    } catch (Exception e) {</span>
+<span class="nc" id="L121">      System.err.println(&quot;Error: Unable to create event engine.&quot;);</span>
+<span class="nc" id="L122">      System.err.println(e.getMessage());</span>
+<span class="nc" id="L123">      return 1;</span>
+<span class="fc" id="L124">    }</span>
+<span class="pc bpc" id="L125" title="1 of 2 branches missed.">    if (eventEngine == null) {</span>
+<span class="nc" id="L126">      System.err.println(&quot;Error: Unable to initialize event engine.&quot;);</span>
+<span class="nc" id="L127">      return 1;</span>
+    }
+
+<span class="fc bfc" id="L130" title="All 2 branches covered.">    if (!titleKeyword.isEmpty()) {</span>
+<span class="fc" id="L131">      List&lt;Event&gt; results = eventEngine.searchInTitle(titleKeyword);</span>
+<span class="pc bpc" id="L132" title="1 of 2 branches missed.">      if (results.isEmpty()) {</span>
+<span class="fc" id="L133">        System.out.println(&quot;No events found with title containing \&quot;&quot; + titleKeyword + &quot;\&quot;.&quot;);</span>
+<span class="fc" id="L134">        return 0;</span>
+      } else {
+<span class="nc" id="L136">        System.out.println(&quot;Events found with title containing \&quot;&quot; + titleKeyword + &quot;\&quot;:&quot;);</span>
+<span class="nc" id="L137">        System.out.println(PrettyEvent.showEventsInDetail(results));</span>
+<span class="nc" id="L138">        return 0;</span>
+      }
+<span class="fc bfc" id="L140" title="All 2 branches covered.">    } else if (!keyword.isEmpty()) {</span>
+<span class="fc" id="L141">      List&lt;Event&gt; results = eventEngine.searchInTitleAndDescription(keyword);</span>
+<span class="fc bfc" id="L142" title="All 2 branches covered.">      if (results.isEmpty()) {</span>
+<span class="fc" id="L143">        System.out.println(</span>
+            &quot;No events found with keyword \&quot;&quot; + keyword + &quot;\&quot; in title or description.&quot;);
+<span class="fc" id="L145">        return 0;</span>
+      } else {
+<span class="fc" id="L147">        System.out.println(</span>
+            &quot;Events found with keyword \&quot;&quot; + keyword + &quot;\&quot; in title or description:&quot;);
+<span class="fc" id="L149">        System.out.println(PrettyEvent.showEventsInDetail(results));</span>
+<span class="fc" id="L150">        return 0;</span>
+      }
+    } else {
+<span class="fc" id="L153">      System.err.println(</span>
+          &quot;Error: Please provide a keyword \&quot;calctl search &lt;KEYWORD&gt;\&quot; to search in title and&quot;
+              + &quot; description, or a title keyword \&quot;calctl search --title TITLE\&quot; to search in&quot;
+              + &quot; title only.&quot;);
+<span class="fc" id="L157">      return 1;</span>
+    }
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span></div></body></html>

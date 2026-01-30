@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ListCommand.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">app</a> &gt; <a href="index.source.html" class="el_package">joeysbase.calctl</a> &gt; <span class="el_source">ListCommand.java</span></div><h1>ListCommand.java</h1><pre class="source lang-java linenums">package joeysbase.calctl;
+
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+import java.util.List;
+import java.util.concurrent.Callable;
+
+import picocli.CommandLine.Command;
+import picocli.CommandLine.Option;
+
+/**
+ * The ListCommand class is responsible for listing events in the calendar based on various
+ * criteria. It supports filtering events by date range, today's events, this week's events, or
+ * listing all events.
+ *
+ * &lt;p&gt;Command-line options:
+ *
+ * &lt;ul&gt;
+ *   &lt;li&gt;&lt;b&gt;--from&lt;/b&gt;: Specifies the start date for filtering events. The date should be in the
+ *       format YYYY-MM-DD.
+ *   &lt;li&gt;&lt;b&gt;--to&lt;/b&gt;: Specifies the end date for filtering events. The date should be in the format
+ *       YYYY-MM-DD.
+ *   &lt;li&gt;&lt;b&gt;--week&lt;/b&gt;: Lists all events occurring in the current week.
+ *   &lt;li&gt;&lt;b&gt;--today&lt;/b&gt;: Lists all events occurring today.
+ * &lt;/ul&gt;
+ *
+ * &lt;p&gt;Behavior:
+ *
+ * &lt;ul&gt;
+ *   &lt;li&gt;If both &lt;b&gt;--from&lt;/b&gt; and &lt;b&gt;--to&lt;/b&gt; are provided, events within the specified date range
+ *       are listed.
+ *   &lt;li&gt;If only &lt;b&gt;--from&lt;/b&gt; is provided, events starting from the specified date are listed.
+ *   &lt;li&gt;If only &lt;b&gt;--to&lt;/b&gt; is provided, events up to the specified date are listed.
+ *   &lt;li&gt;If &lt;b&gt;--today&lt;/b&gt; is provided, only today's events are listed.
+ *   &lt;li&gt;If &lt;b&gt;--week&lt;/b&gt; is provided, events for the current week are listed.
+ *   &lt;li&gt;If no options are provided, all events are listed.
+ * &lt;/ul&gt;
+ *
+ * &lt;p&gt;Validation:
+ *
+ * &lt;ul&gt;
+ *   &lt;li&gt;Dates provided with &lt;b&gt;--from&lt;/b&gt; and &lt;b&gt;--to&lt;/b&gt; are validated to ensure they are in the
+ *       correct format (YYYY-MM-DD).
+ *   &lt;li&gt;An error is displayed if the &lt;b&gt;--from&lt;/b&gt; date is after the &lt;b&gt;--to&lt;/b&gt; date.
+ * &lt;/ul&gt;
+ *
+ * &lt;p&gt;Output:
+ *
+ * &lt;ul&gt;
+ *   &lt;li&gt;If no events are found, a message &quot;No events found.&quot; is displayed.
+ *   &lt;li&gt;Events are displayed in a formatted manner using the PrettyEvent utility.
+ * &lt;/ul&gt;
+ *
+ * &lt;p&gt;Exit Codes:
+ *
+ * &lt;ul&gt;
+ *   &lt;li&gt;0: Successful execution.
+ *   &lt;li&gt;1: Error due to invalid input or other issues.
+ * &lt;/ul&gt;
+ */
+@Command(
+    name = &quot;list&quot;,
+    description = &quot;List all events in the calendar&quot;,
+    mixinStandardHelpOptions = true)
+@SuppressWarnings(&quot;PMD&quot;)
+<span class="fc" id="L67">class ListCommand implements Callable&lt;Integer&gt; {</span>
+
+  @Option(
+      names = {&quot;--from&quot;},
+      description = &quot;The date from which the events start.&quot;,
+      defaultValue = &quot;&quot;,
+      paramLabel = &quot;DATE&quot;)
+  String from;
+
+  @Option(
+      names = {&quot;--to&quot;},
+      description = &quot;The date until which the events end.&quot;,
+      defaultValue = &quot;&quot;,
+      paramLabel = &quot;DATE&quot;)
+  String to;
+
+  @Option(
+      names = {&quot;--week&quot;},
+      description = &quot;List this week's events.&quot;)
+  boolean week;
+
+  @Option(
+      names = {&quot;--today&quot;},
+      description = &quot;List today's events.&quot;)
+  boolean today;
+
+  /**
+   * Executes the command to list events based on the specified criteria. The method processes the
+   * input parameters to determine the date range or specific conditions for filtering events. It
+   * supports the following scenarios:
+   *
+   * &lt;p&gt;- If both `from` and `to` dates are provided, it lists events within the specified range. -
+   * If only `from` is provided, it lists events starting from the `from` date. - If only `to` is
+   * provided, it lists events up to the `to` date. - If the `today` flag is set, it lists events
+   * for the current day. - If the `week` flag is set, it lists events for the current week (Monday
+   * to Sunday). - If no criteria are provided, it lists all events.
+   *
+   * &lt;p&gt;The method validates the input dates and ensures that the `from` date is not after the `to`
+   * date. If no events are found, it prints a message and exits. Otherwise, it displays the events
+   * in a formatted manner.
+   *
+   * &lt;p&gt;Note: The method terminates the program using `System.exit()` after execution.
+   */
+  @Override
+  public Integer call() {
+<span class="fc bfc" id="L112" title="All 4 branches covered.">    if (!isValidDate(from) || !isValidDate(to)) {</span>
+<span class="fc" id="L113">      return 1;</span>
+    }
+
+    EventEngine eventEngine;
+    try {
+<span class="fc" id="L118">      eventEngine = EventEngine.load();</span>
+<span class="nc" id="L119">    } catch (Exception e) {</span>
+<span class="nc" id="L120">      System.err.println(&quot;Error: Unable to create event engine.&quot;);</span>
+<span class="nc" id="L121">      System.err.println(e.getMessage());</span>
+<span class="nc" id="L122">      return 1;</span>
+<span class="fc" id="L123">    }</span>
+<span class="pc bpc" id="L124" title="1 of 2 branches missed.">    if (eventEngine == null) {</span>
+<span class="nc" id="L125">      System.err.println(&quot;Error: Unable to initialize event engine.&quot;);</span>
+<span class="nc" id="L126">      return 1;</span>
+    }
+
+    List&lt;Event&gt; events;
+<span class="fc bfc" id="L130" title="All 4 branches covered.">    if (!from.isEmpty() &amp;&amp; !to.isEmpty()) {</span>
+
+<span class="fc" id="L132">      LocalDate fromDate = LocalDate.parse(from, DateTimeFormatter.ISO_LOCAL_DATE);</span>
+<span class="fc" id="L133">      LocalDate toDate = LocalDate.parse(to, DateTimeFormatter.ISO_LOCAL_DATE);</span>
+<span class="pc bpc" id="L134" title="1 of 2 branches missed.">      if (fromDate.isAfter(toDate)) {</span>
+<span class="nc" id="L135">        System.err.println(&quot;Error: --from date cannot be after --to date.&quot;);</span>
+<span class="nc" id="L136">        return 1;</span>
+      }
+<span class="fc" id="L138">      events = eventEngine.findByDateRange(fromDate, toDate);</span>
+<span class="fc bfc" id="L139" title="All 2 branches covered.">    } else if (!from.isEmpty()) {</span>
+<span class="fc" id="L140">      LocalDate fromDate = LocalDate.parse(from, DateTimeFormatter.ISO_LOCAL_DATE);</span>
+<span class="fc" id="L141">      events = eventEngine.findByDateRange(fromDate, false);</span>
+<span class="fc bfc" id="L142" title="All 2 branches covered.">    } else if (!to.isEmpty()) {</span>
+<span class="fc" id="L143">      LocalDate toDate = LocalDate.parse(to, DateTimeFormatter.ISO_LOCAL_DATE);</span>
+<span class="fc" id="L144">      events = eventEngine.findByDateRange(toDate, true);</span>
+<span class="fc bfc" id="L145" title="All 2 branches covered.">    } else if (today) {</span>
+<span class="fc" id="L146">      LocalDate todayDate = LocalDate.now();</span>
+<span class="fc" id="L147">      events = eventEngine.findByDate(todayDate);</span>
+<span class="fc bfc" id="L148" title="All 2 branches covered.">    } else if (week) {</span>
+<span class="fc" id="L149">      int dayOfWeekValue = LocalDate.now().getDayOfWeek().getValue();</span>
+<span class="fc" id="L150">      LocalDate weekStart = LocalDate.now().minusDays(dayOfWeekValue - 1);</span>
+<span class="fc" id="L151">      LocalDate weekEnd = weekStart.plusDays(6);</span>
+<span class="fc" id="L152">      events = eventEngine.findByDateRange(weekStart, weekEnd);</span>
+<span class="fc" id="L153">    } else {</span>
+<span class="fc" id="L154">      events = eventEngine.getAllEvents();</span>
+    }
+<span class="fc bfc" id="L156" title="All 2 branches covered.">    if (events.isEmpty()) {</span>
+<span class="fc" id="L157">      System.out.println(&quot;No events found.&quot;);</span>
+<span class="fc" id="L158">      return 0;</span>
+    }
+<span class="fc" id="L160">    System.out.println(PrettyEvent.listEvents(events));</span>
+<span class="fc" id="L161">    return 0;</span>
+  }
+
+  private static boolean isValidDate(String dateString) {
+<span class="fc bfc" id="L165" title="All 2 branches covered.">    if (dateString.isEmpty()) {</span>
+<span class="fc" id="L166">      return true;</span>
+    }
+    try {
+<span class="fc" id="L169">      LocalDate.parse(dateString, DateTimeFormatter.ISO_LOCAL_DATE);</span>
+<span class="fc" id="L170">    } catch (DateTimeParseException e) {</span>
+<span class="fc" id="L171">      System.err.println(</span>
+          &quot;Error: Invalid date format &quot; + &quot;\&quot;&quot; + dateString + &quot;\&quot;. &quot; + &quot;Please use YYYY-MM-DD.&quot;);
+<span class="fc" id="L173">      return false;</span>
+<span class="nc" id="L174">    } catch (Exception e) {</span>
+<span class="nc" id="L175">      System.err.println(&quot;Error: Unable to parse date.&quot;);</span>
+<span class="nc" id="L176">      System.err.println(e.getMessage());</span>
+<span class="nc" id="L177">      return false;</span>
+<span class="fc" id="L178">    }</span>
+<span class="fc" id="L179">    return true;</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span></div></body></html>

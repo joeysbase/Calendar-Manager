@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Event.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">app</a> &gt; <a href="index.source.html" class="el_package">joeysbase.calctl</a> &gt; <span class="el_source">Event.java</span></div><h1>Event.java</h1><pre class="source lang-java linenums">package joeysbase.calctl;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
+import edu.northeastern.timeduration.Duration;
+
+/**
+ * The Event class represents an event with various attributes such as title, description, start
+ * time, duration, location, and timestamps for creation and updates. It also provides functionality
+ * to check for conflicts with other events based on their time intervals.
+ *
+ * &lt;p&gt;This class is immutable once built using the {@link Builder} class, which allows for flexible
+ * construction of Event objects.
+ *
+ * &lt;p&gt;Features:
+ *
+ * &lt;ul&gt;
+ *   &lt;li&gt;Comparison of events based on their start time.
+ *   &lt;li&gt;Conversion of event details to JSON format.
+ *   &lt;li&gt;Conflict detection with other events based on overlapping time intervals.
+ * &lt;/ul&gt;
+ *
+ * &lt;p&gt;Usage Example:
+ *
+ * &lt;pre&gt;
+ * Event event = new Event.Builder(&quot;1&quot;, &quot;Meeting&quot;)
+ *     .description(&quot;Team meeting&quot;)
+ *     .startDateTime(LocalDateTime.of(2023, 10, 1, 10, 0))
+ *     .duration(Duration.ofHours(1))
+ *     .location(&quot;Conference Room&quot;)
+ *     .timeCreated(LocalDateTime.now())
+ *     .timeUpdated(LocalDateTime.now())
+ *     .build();
+ * &lt;/pre&gt;
+ *
+ * &lt;p&gt;Note: The {@link Interval} class is used internally to represent time intervals for conflict
+ * detection.
+ *
+ * @see Builder
+ */
+@SuppressWarnings(&quot;PMD&quot;)
+class Event implements Comparable&lt;Event&gt; {
+
+  private String id;
+  private String title;
+  private String description;
+  private LocalDateTime startDateTime;
+  private Duration duration;
+  private String location;
+  private LocalDateTime timeCreated;
+  private LocalDateTime timeUpdated;
+
+<span class="fc" id="L57">  Event(Builder builder) {</span>
+<span class="fc" id="L58">    this.id = builder.id;</span>
+<span class="fc" id="L59">    this.title = builder.title;</span>
+<span class="fc" id="L60">    this.description = builder.description;</span>
+<span class="fc" id="L61">    this.startDateTime = builder.startDateTime;</span>
+<span class="fc" id="L62">    this.duration = builder.duration;</span>
+<span class="fc" id="L63">    this.location = builder.location;</span>
+<span class="fc" id="L64">    this.timeCreated = builder.timeCreated;</span>
+<span class="fc" id="L65">    this.timeUpdated = builder.timeUpdated;</span>
+<span class="fc" id="L66">  }</span>
+
+  private class Interval {
+
+    private final LocalDateTime start;
+    private final LocalDateTime end;
+
+<span class="fc" id="L73">    Interval(LocalDateTime start, LocalDateTime end) {</span>
+<span class="fc" id="L74">      this.start = start;</span>
+<span class="fc" id="L75">      this.end = end;</span>
+<span class="fc" id="L76">    }</span>
+
+    boolean isOverlap(Interval other) {
+<span class="fc bfc" id="L79" title="All 4 branches covered.">      return this.start.isBefore(other.end) &amp;&amp; this.end.isAfter(other.start);</span>
+    }
+  }
+
+  static class Builder {
+
+    private String id;
+    private String title;
+<span class="fc" id="L87">    private String description = null;</span>
+    private LocalDateTime startDateTime;
+    private Duration duration;
+<span class="fc" id="L90">    private String location = null;</span>
+    private LocalDateTime timeCreated;
+    private LocalDateTime timeUpdated;
+
+<span class="fc" id="L94">    Builder(String id, String title) {</span>
+<span class="fc" id="L95">      this.id = id;</span>
+<span class="fc" id="L96">      this.title = title;</span>
+<span class="fc" id="L97">    }</span>
+
+    Builder description(String description) {
+<span class="fc" id="L100">      this.description = description;</span>
+<span class="fc" id="L101">      return this;</span>
+    }
+
+    Builder startDateTime(LocalDateTime startDateTime) {
+<span class="fc" id="L105">      this.startDateTime = startDateTime;</span>
+<span class="fc" id="L106">      return this;</span>
+    }
+
+    Builder duration(Duration duration) {
+<span class="fc" id="L110">      this.duration = duration;</span>
+<span class="fc" id="L111">      return this;</span>
+    }
+
+    Builder location(String location) {
+<span class="fc" id="L115">      this.location = location;</span>
+<span class="fc" id="L116">      return this;</span>
+    }
+
+    Builder timeCreated(LocalDateTime timeCreated) {
+<span class="fc" id="L120">      this.timeCreated = timeCreated;</span>
+<span class="fc" id="L121">      return this;</span>
+    }
+
+    Builder timeUpdated(LocalDateTime timeUpdated) {
+<span class="fc" id="L125">      this.timeUpdated = timeUpdated;</span>
+<span class="fc" id="L126">      return this;</span>
+    }
+
+    Event build() {
+<span class="fc" id="L130">      return new Event(this);</span>
+    }
+  }
+
+  String toJsonString() {
+<span class="fc" id="L135">    Gson gson =</span>
+        new GsonBuilder()
+<span class="fc" id="L137">            .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeTypeAdapter())</span>
+<span class="fc" id="L138">            .registerTypeAdapter(LocalDate.class, new LocalDateTypeAdapter())</span>
+<span class="fc" id="L139">            .create();</span>
+
+<span class="fc" id="L141">    return gson.toJson(this);</span>
+  }
+
+  boolean isConflict(Event other) {
+<span class="pc bpc" id="L145" title="1 of 2 branches missed.">    if (other == null) {</span>
+<span class="nc" id="L146">      return false;</span>
+    }
+<span class="fc" id="L148">    Interval thisInterval =</span>
+<span class="fc" id="L149">        new Interval(this.startDateTime, this.startDateTime.plusSeconds(this.duration.toSeconds()));</span>
+<span class="fc" id="L150">    Interval otherInterval =</span>
+        new Interval(
+<span class="fc" id="L152">            other.startDateTime, other.startDateTime.plusSeconds(other.duration.toSeconds()));</span>
+<span class="fc" id="L153">    return thisInterval.isOverlap(otherInterval);</span>
+  }
+
+  String getId() {
+<span class="fc" id="L157">    return id;</span>
+  }
+
+  void setId(String id) {
+<span class="nc" id="L161">    this.id = id;</span>
+<span class="nc" id="L162">  }</span>
+
+  String getTitle() {
+<span class="fc" id="L165">    return title;</span>
+  }
+
+  void setTitle(String title) {
+<span class="fc" id="L169">    this.title = title;</span>
+<span class="fc" id="L170">  }</span>
+
+  String getDescription() {
+<span class="fc" id="L173">    return description;</span>
+  }
+
+  void setDescription(String description) {
+<span class="nc" id="L177">    this.description = description;</span>
+<span class="nc" id="L178">  }</span>
+
+  LocalDateTime getStartDateTime() {
+<span class="fc" id="L181">    return startDateTime;</span>
+  }
+
+  void setStartDateTime(LocalDateTime startDateTime) {
+<span class="fc" id="L185">    this.startDateTime = startDateTime;</span>
+<span class="fc" id="L186">  }</span>
+
+  Duration getDuration() {
+<span class="fc" id="L189">    return duration;</span>
+  }
+
+  void setDuration(Duration duration) {
+<span class="nc" id="L193">    this.duration = duration;</span>
+<span class="nc" id="L194">  }</span>
+
+  String getLocation() {
+<span class="fc" id="L197">    return location;</span>
+  }
+
+  void setLocation(String location) {
+<span class="nc" id="L201">    this.location = location;</span>
+<span class="nc" id="L202">  }</span>
+
+  LocalDateTime getTimeCreated() {
+<span class="fc" id="L205">    return timeCreated;</span>
+  }
+
+  void setTimeCreated(LocalDateTime timeCreated) {
+<span class="nc" id="L209">    this.timeCreated = timeCreated;</span>
+<span class="nc" id="L210">  }</span>
+
+  LocalDateTime getTimeUpdated() {
+<span class="fc" id="L213">    return timeUpdated;</span>
+  }
+
+  void setTimeUpdated(LocalDateTime timeUpdated) {
+<span class="fc" id="L217">    this.timeUpdated = timeUpdated;</span>
+<span class="fc" id="L218">  }</span>
+
+  @Override
+  public int compareTo(Event o) {
+<span class="fc" id="L222">    return this.startDateTime.compareTo(o.startDateTime);</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span></div></body></html>

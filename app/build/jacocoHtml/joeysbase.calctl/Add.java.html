@@ -1,0 +1,261 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Add.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">app</a> &gt; <a href="index.source.html" class="el_package">joeysbase.calctl</a> &gt; <span class="el_source">Add.java</span></div><h1>Add.java</h1><pre class="source lang-java linenums">package joeysbase.calctl;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.Callable;
+
+import edu.northeastern.timeduration.Duration;
+import picocli.CommandLine.Command;
+import picocli.CommandLine.Option;
+import picocli.CommandLine.ParentCommand;
+
+/**
+ * The {@code Add} class is a command-line utility for adding a new event to the calendar. It
+ * provides options to specify the event's title, date, start time, duration, description, and
+ * location. The class validates the input and ensures that required fields are provided. It also
+ * checks for event conflicts unless the {@code --force} option is specified.
+ *
+ * &lt;p&gt;Usage:
+ *
+ * &lt;ul&gt;
+ *   &lt;li&gt;{@code --title}: Title of the event (required).
+ *   &lt;li&gt;{@code --date}: Date of the event in YYYY-MM-DD format (required).
+ *   &lt;li&gt;{@code --time}: Start time of the event in HH:MM format (required).
+ *   &lt;li&gt;{@code --duration}: Duration of the event in Ww Dd Hh Mm format (required).
+ *   &lt;li&gt;{@code --description}: Description of the event (optional).
+ *   &lt;li&gt;{@code --location}: Location of the event (optional).
+ * &lt;/ul&gt;
+ *
+ * &lt;p&gt;Features:
+ *
+ * &lt;ul&gt;
+ *   &lt;li&gt;Validates the date and time formats.
+ *   &lt;li&gt;Checks for event conflicts unless the {@code --force} option is used.
+ *   &lt;li&gt;Creates and adds the event to the calendar.
+ *   &lt;li&gt;Persists the event data to a file.
+ * &lt;/ul&gt;
+ *
+ * &lt;p&gt;Example:
+ *
+ * &lt;pre&gt;
+ *   java Add --title &quot;Meeting&quot; --date &quot;2023-10-10&quot; --time &quot;14:00&quot; --duration &quot;1h 30m&quot;
+ * &lt;/pre&gt;
+ *
+ * &lt;p&gt;Errors:
+ *
+ * &lt;ul&gt;
+ *   &lt;li&gt;Missing required fields: {@code --title}, {@code --date}, {@code --time}, {@code
+ *       --duration}.
+ *   &lt;li&gt;Invalid date or time format.
+ *   &lt;li&gt;Invalid duration format.
+ *   &lt;li&gt;Event conflicts detected (unless {@code --force} is used).
+ * &lt;/ul&gt;
+ *
+ * &lt;p&gt;Dependencies:
+ *
+ * &lt;ul&gt;
+ *   &lt;li&gt;{@code CalendarControl}: Parent command providing context for the calendar operations.
+ *   &lt;li&gt;{@code Event}: Represents the event to be added.
+ *   &lt;li&gt;{@code PrettyEvent}: Utility for formatting event details.
+ * &lt;/ul&gt;
+ */
+@Command(
+    name = &quot;add&quot;,
+    description = &quot;Add a new event to the calendar&quot;,
+    mixinStandardHelpOptions = true)
+@SuppressWarnings(&quot;PMD&quot;)
+<span class="fc" id="L72">class Add implements Callable&lt;Integer&gt; {</span>
+
+  @ParentCommand CalendarControl calendarControl;
+
+  @Option(
+      names = {&quot;--title&quot;},
+      paramLabel = &quot;TITLE&quot;,
+      description = &quot;Title of the event&quot;,
+      defaultValue = &quot;&quot;)
+  String title;
+
+  @Option(
+      names = {&quot;--date&quot;},
+      paramLabel = &quot;DATE&quot;,
+      description = &quot;Date of the event in YYYY-MM-DD format&quot;,
+      defaultValue = &quot;&quot;)
+  String date;
+
+  @Option(
+      names = {&quot;--time&quot;},
+      paramLabel = &quot;START_TIME&quot;,
+      description = &quot;Start time of the event in HH:MM format&quot;,
+      defaultValue = &quot;&quot;)
+  String startTime;
+
+  @Option(
+      names = {&quot;--duration&quot;},
+      paramLabel = &quot;DURATION&quot;,
+      description = &quot;Duration of the event in Ww Dd Hh Mm format&quot;,
+      defaultValue = &quot;&quot;)
+  String duration;
+
+  @Option(
+      names = {&quot;--description&quot;},
+      paramLabel = &quot;DESCRIPTION&quot;,
+      description = &quot;Description of the event&quot;,
+      defaultValue = &quot;&quot;)
+  String description;
+
+  @Option(
+      names = {&quot;--location&quot;},
+      paramLabel = &quot;LOCATION&quot;,
+      description = &quot;Location of the event&quot;,
+      defaultValue = &quot;&quot;)
+  String location;
+
+  /**
+   * Executes the process of adding a new event to the calendar.
+   *
+   * &lt;p&gt;This method validates the input fields, checks for event conflicts, and adds the event to
+   * the calendar if all conditions are met. If the `--force` option is set, conflict checking is
+   * skipped.
+   *
+   * &lt;p&gt;The required fields for the event are:
+   *
+   * &lt;ul&gt;
+   *   &lt;li&gt;title
+   *   &lt;li&gt;date
+   *   &lt;li&gt;startTime
+   *   &lt;li&gt;duration
+   * &lt;/ul&gt;
+   *
+   * &lt;p&gt;If any of these fields are missing, the program will terminate with an error message.
+   *
+   * &lt;p&gt;The method performs the following steps:
+   *
+   * &lt;ol&gt;
+   *   &lt;li&gt;Validates the date and time formats.
+   *   &lt;li&gt;Parses the date, time, and duration into appropriate objects.
+   *   &lt;li&gt;Constructs an event object with the provided details.
+   *   &lt;li&gt;Checks for conflicts with existing events unless the `--force` option is set.
+   *   &lt;li&gt;Adds the event to the calendar and saves the updated calendar to a file.
+   * &lt;/ol&gt;
+   *
+   * &lt;p&gt;If conflicts are detected and the `--force` option is not set, the program will terminate
+   * with a message listing the conflicting events.
+   *
+   * &lt;p&gt;Upon successful addition of the event, the method prints a success message and details of
+   * the newly added event.
+   *
+   * &lt;p&gt;Note: The program terminates with `System.exit()` in case of errors or after successful
+   * execution.
+   */
+  @Override
+  public Integer call() {
+<span class="fc" id="L157">    EventEngine eventEngine = null;</span>
+    try {
+<span class="fc" id="L159">      eventEngine = EventEngine.load();</span>
+<span class="nc" id="L160">    } catch (Exception e) {</span>
+<span class="nc" id="L161">      System.err.println(&quot;Error: Unable to create event engine.&quot;);</span>
+<span class="nc" id="L162">      System.err.println(e.getMessage());</span>
+<span class="nc" id="L163">      return 1;</span>
+<span class="fc" id="L164">    }</span>
+<span class="pc bpc" id="L165" title="1 of 2 branches missed.">    if (eventEngine == null) {</span>
+<span class="nc" id="L166">      System.err.println(&quot;Error: Unable to initialize event engine. Your event file maybe empty.&quot;);</span>
+<span class="nc" id="L167">      return 1;</span>
+    }
+
+<span class="pc bpc" id="L170" title="3 of 8 branches missed.">    if (title.isEmpty() || date.isEmpty() || startTime.isEmpty() || duration.isEmpty()) {</span>
+<span class="fc" id="L171">      System.err.println(&quot;Error: --title, --date, --time, and --duration are required fields.&quot;);</span>
+<span class="fc" id="L172">      return 1;</span>
+    }
+<span class="fc bfc" id="L174" title="All 4 branches covered.">    if (!isValidDate(date) || !isValidTime(startTime)) {</span>
+<span class="fc" id="L175">      return 1;</span>
+    }
+<span class="fc" id="L177">    LocalDate localDate = LocalDate.parse(date, DateTimeFormatter.ISO_LOCAL_DATE);</span>
+<span class="fc" id="L178">    LocalTime localTime = LocalTime.parse(startTime, DateTimeFormatter.ISO_LOCAL_TIME);</span>
+<span class="fc" id="L179">    LocalDateTime startDateTime = LocalDateTime.of(localDate, localTime);</span>
+<span class="fc" id="L180">    Duration eventDuration = null;</span>
+    try {
+<span class="fc" id="L182">      eventDuration = new Duration(duration);</span>
+<span class="fc" id="L183">    } catch (Exception e) {</span>
+<span class="fc" id="L184">      System.err.println(e.getMessage());</span>
+<span class="fc" id="L185">      System.err.println(</span>
+          &quot;Error: Invalid duration format &quot; + &quot;\&quot;&quot; + duration + &quot;\&quot;. &quot; + &quot;Please use Ww Dd Hh Mm.&quot;);
+<span class="fc" id="L187">      return 1;</span>
+<span class="fc" id="L188">    }</span>
+
+<span class="fc" id="L190">    Event event =</span>
+        new Event.Builder(
+<span class="fc" id="L192">                &quot;evt-&quot; + String.valueOf((title + startDateTime.toString()).hashCode()), title)</span>
+<span class="fc" id="L193">            .description(description)</span>
+<span class="fc" id="L194">            .startDateTime(startDateTime)</span>
+<span class="fc" id="L195">            .duration(eventDuration)</span>
+<span class="fc" id="L196">            .location(location)</span>
+<span class="fc" id="L197">            .timeCreated(LocalDateTime.now())</span>
+<span class="fc" id="L198">            .timeUpdated(LocalDateTime.now())</span>
+<span class="fc" id="L199">            .build();</span>
+
+<span class="fc bfc" id="L201" title="All 2 branches covered.">    if (this.calendarControl.force) {</span>
+<span class="fc" id="L202">      System.out.println(&quot;Warning: --force option is set. Skipping event conflicts checking.&quot;);</span>
+    } else {
+<span class="fc" id="L204">      List&lt;String&gt; eventIds = eventEngine.checkConflicts(event);</span>
+<span class="fc bfc" id="L205" title="All 2 branches covered.">      if (!eventIds.isEmpty()) {</span>
+<span class="fc" id="L206">        System.err.println(eventIds.size() + &quot; events found conflicted with the new event.&quot;);</span>
+<span class="fc" id="L207">        System.err.println(PrettyEvent.showConflicts(eventEngine.findByIds(eventIds)));</span>
+<span class="fc" id="L208">        System.err.println(&quot;Consider using calctl --force option to add anyway.&quot;);</span>
+<span class="fc" id="L209">        return 1;</span>
+      }
+    }
+
+<span class="fc" id="L213">    eventEngine.addEvent(event);</span>
+    try {
+<span class="fc" id="L215">      eventEngine.toFile();</span>
+<span class="nc" id="L216">    } catch (Exception e) {</span>
+<span class="nc" id="L217">      System.err.println(e);</span>
+<span class="nc" id="L218">      return 1;</span>
+<span class="fc" id="L219">    }</span>
+<span class="fc" id="L220">    System.out.println(&quot;Event added successfully.&quot;);</span>
+<span class="fc" id="L221">    System.out.println(PrettyEvent.listEvents(new ArrayList&lt;&gt;(List.of(event))));</span>
+<span class="fc" id="L222">    return 0;</span>
+  }
+
+  private static boolean isValidDate(String dateString) {
+<span class="pc bpc" id="L226" title="1 of 2 branches missed.">    if (dateString.isEmpty()) {</span>
+<span class="nc" id="L227">      return true;</span>
+    }
+    try {
+<span class="fc" id="L230">      LocalDate.parse(dateString, DateTimeFormatter.ISO_LOCAL_DATE);</span>
+<span class="fc" id="L231">    } catch (DateTimeParseException e) {</span>
+<span class="fc" id="L232">      System.err.println(</span>
+          &quot;Error: Invalid date format &quot; + &quot;\&quot;&quot; + dateString + &quot;\&quot;. &quot; + &quot;Please use YYYY-MM-DD.&quot;);
+<span class="fc" id="L234">      return false;</span>
+<span class="nc" id="L235">    } catch (Exception e) {</span>
+<span class="nc" id="L236">      System.err.println(&quot;Error: Unable to parse date.&quot;);</span>
+<span class="nc" id="L237">      System.err.println(e.getMessage());</span>
+<span class="nc" id="L238">      return false;</span>
+<span class="fc" id="L239">    }</span>
+<span class="fc" id="L240">    return true;</span>
+  }
+
+  private static boolean isValidTime(String timeString) {
+<span class="pc bpc" id="L244" title="1 of 2 branches missed.">    if (timeString.isEmpty()) {</span>
+<span class="nc" id="L245">      return false;</span>
+    }
+    try {
+<span class="fc" id="L248">      LocalTime.parse(timeString, DateTimeFormatter.ISO_LOCAL_TIME);</span>
+<span class="fc" id="L249">    } catch (DateTimeParseException e) {</span>
+<span class="fc" id="L250">      System.err.println(</span>
+          &quot;Error: Invalid time format &quot; + &quot;\&quot;&quot; + timeString + &quot;\&quot;. &quot; + &quot;Please use HH:MM.&quot;);
+<span class="fc" id="L252">      return false;</span>
+<span class="nc" id="L253">    } catch (Exception e) {</span>
+<span class="nc" id="L254">      System.err.println(&quot;Error: Unable to parse date.&quot;);</span>
+<span class="nc" id="L255">      System.err.println(e.getMessage());</span>
+<span class="nc" id="L256">      return false;</span>
+<span class="fc" id="L257">    }</span>
+<span class="fc" id="L258">    return true;</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span></div></body></html>

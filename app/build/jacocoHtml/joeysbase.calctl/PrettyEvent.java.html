@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>PrettyEvent.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">app</a> &gt; <a href="index.source.html" class="el_package">joeysbase.calctl</a> &gt; <span class="el_source">PrettyEvent.java</span></div><h1>PrettyEvent.java</h1><pre class="source lang-java linenums">package joeysbase.calctl;
+
+import java.util.List;
+
+import de.vandermeer.asciitable.AsciiTable;
+
+/**
+ * The PrettyEvent class provides utility methods for formatting and displaying event-related data
+ * in a human-readable format. It uses ASCII tables for tabular representations and string builders
+ * for listing conflicts.
+ */
+<span class="nc" id="L12">class PrettyEvent {</span>
+
+  static String listEvents(List&lt;Event&gt; events) {
+<span class="fc" id="L15">    AsciiTable at = new AsciiTable();</span>
+<span class="fc" id="L16">    at.addRow(&quot;Title&quot;, &quot;Start Datetime&quot;, &quot;Duration&quot;, &quot;Description&quot;, &quot;Location&quot;);</span>
+<span class="fc bfc" id="L17" title="All 2 branches covered.">    for (Event event : events) {</span>
+<span class="fc" id="L18">      at.addRow(</span>
+<span class="fc" id="L19">          event.getTitle(),</span>
+<span class="fc" id="L20">          event.getStartDateTime().toString(),</span>
+<span class="fc" id="L21">          event.getDuration().toString(),</span>
+<span class="fc" id="L22">          event.getDescription(),</span>
+<span class="fc" id="L23">          event.getLocation());</span>
+<span class="fc" id="L24">    }</span>
+<span class="fc" id="L25">    return at.render();</span>
+  }
+
+  static String showAgenda(List&lt;Event&gt; events) {
+<span class="fc" id="L29">    return listEvents(events);</span>
+  }
+
+  static String showEventsInDetail(List&lt;Event&gt; events) {
+<span class="fc" id="L33">    AsciiTable at = new AsciiTable();</span>
+<span class="fc" id="L34">    at.addRow(</span>
+        &quot;ID&quot;,
+        &quot;Title&quot;,
+        &quot;Start Datetime&quot;,
+        &quot;Duration&quot;,
+        &quot;Description&quot;,
+        &quot;Location&quot;,
+        &quot;Created At&quot;,
+        &quot;Updated At&quot;);
+<span class="fc bfc" id="L43" title="All 2 branches covered.">    for (Event event : events) {</span>
+<span class="fc" id="L44">      at.addRow(</span>
+<span class="fc" id="L45">          event.getId(),</span>
+<span class="fc" id="L46">          event.getTitle(),</span>
+<span class="fc" id="L47">          event.getStartDateTime().toString(),</span>
+<span class="fc" id="L48">          event.getDuration().toString(),</span>
+<span class="fc" id="L49">          event.getDescription(),</span>
+<span class="fc" id="L50">          event.getLocation(),</span>
+<span class="fc" id="L51">          event.getTimeCreated().toString(),</span>
+<span class="fc" id="L52">          event.getTimeUpdated().toString());</span>
+<span class="fc" id="L53">    }</span>
+<span class="fc" id="L54">    return at.render();</span>
+  }
+
+  static String showConflicts(List&lt;Event&gt; events) {
+<span class="fc" id="L58">    StringBuilder sb = new StringBuilder();</span>
+<span class="fc bfc" id="L59" title="All 2 branches covered.">    for (Event event : events) {</span>
+<span class="fc" id="L60">      sb.append(&quot;- &quot;)</span>
+<span class="fc" id="L61">          .append(&quot;\&quot;&quot;)</span>
+<span class="fc" id="L62">          .append(event.getTitle())</span>
+<span class="fc" id="L63">          .append(&quot;\&quot; &quot;)</span>
+<span class="fc" id="L64">          .append(&quot;(&quot;)</span>
+<span class="fc" id="L65">          .append(event.getStartDateTime())</span>
+<span class="fc" id="L66">          .append(&quot; -&gt; &quot;)</span>
+<span class="fc" id="L67">          .append(event.getStartDateTime().plusSeconds(event.getDuration().toSeconds()))</span>
+<span class="fc" id="L68">          .append(&quot;)\n&quot;);</span>
+<span class="fc" id="L69">    }</span>
+<span class="fc" id="L70">    return sb.toString();</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span></div></body></html>

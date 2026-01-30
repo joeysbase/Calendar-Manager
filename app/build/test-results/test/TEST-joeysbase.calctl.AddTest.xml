@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="joeysbase.calctl.AddTest" tests="7" skipped="0" failures="0" errors="0" timestamp="2026-01-30T19:56:10.070Z" hostname="ishis-MacBook-Air.local" time="0.404">
+  <properties/>
+  <testcase name="testRunWithForceOption()" classname="joeysbase.calctl.AddTest" time="0.258"/>
+  <testcase name="testRunWithMissingRequiredFields()" classname="joeysbase.calctl.AddTest" time="0.01"/>
+  <testcase name="testRunWithInvalidDateFormat()" classname="joeysbase.calctl.AddTest" time="0.024"/>
+  <testcase name="testRunWithInvalidTimeFormat()" classname="joeysbase.calctl.AddTest" time="0.012"/>
+  <testcase name="testRunWithConflictingEvents()" classname="joeysbase.calctl.AddTest" time="0.018"/>
+  <testcase name="testRunWithValidInputs()" classname="joeysbase.calctl.AddTest" time="0.016"/>
+  <testcase name="testRunWithInvalidDurationFormat()" classname="joeysbase.calctl.AddTest" time="0.05"/>
+  <system-out><![CDATA[Event added successfully.
+│Title          │Start Datetime │Duration       │Description    │Location      │
+│Meeting        │2023-10-10T14:0│1h30m          │Team meeting   │Conference    │
+│               │0              │               │               │Room          │
+Warning: --force option is set. Skipping event conflicts checking.
+Event added successfully.
+│Title          │Start Datetime │Duration       │Description    │Location      │
+│Meeting2       │2023-10-10T14:0│1h30m          │Team meeting   │Conference    │
+│               │0              │               │               │Room          │
+Event added successfully.
+│Title          │Start Datetime │Duration       │Description    │Location      │
+│Meeting        │2023-10-10T14:0│1h30m          │Team meeting   │Conference    │
+│               │0              │               │               │Room          │
+Event added successfully.
+│Title          │Start Datetime │Duration       │Description    │Location      │
+│Meeting        │2023-10-10T14:0│1h30m          │Team meeting   │Conference    │
+│               │0              │               │               │Room          │
+]]></system-out>
+  <system-err><![CDATA[Error: --title, --date, --time, and --duration are required fields.
+Error: Invalid date format "10-10-2023". Please use YYYY-MM-DD.
+Error: Invalid time format "2 PM". Please use HH:MM.
+1 events found conflicted with the new event.
+- "Meeting" (2023-10-10T14:00 -> 2023-10-10T15:30)
+
+Consider using calctl --force option to add anyway.
+Unexpected space between numbers and units
+Error: Invalid duration format "90 minutes". Please use Ww Dd Hh Mm.
+]]></system-err>
+</testsuite>

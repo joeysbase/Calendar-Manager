@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="joeysbase.calctl.AgendaTest" tests="5" skipped="0" failures="0" errors="0" timestamp="2026-01-30T19:56:10.477Z" hostname="ishis-MacBook-Air.local" time="0.116">
+  <properties/>
+  <testcase name="testRunWithNoOptions()" classname="joeysbase.calctl.AgendaTest" time="0.051"/>
+  <testcase name="testRunWithWeekOption()" classname="joeysbase.calctl.AgendaTest" time="0.011"/>
+  <testcase name="testRunWithNoEventsFound()" classname="joeysbase.calctl.AgendaTest" time="0.018"/>
+  <testcase name="testRunWithValidDate()" classname="joeysbase.calctl.AgendaTest" time="0.017"/>
+  <testcase name="testRunWithInvalidDate()" classname="joeysbase.calctl.AgendaTest" time="0.015"/>
+  <system-out><![CDATA[Event added successfully.
+│Title          │Start Datetime │Duration       │Description    │Location      │
+│Meeting        │2023-10-10T14:0│1h30m          │Team meeting   │Conference    │
+│               │0              │               │               │Room          │
+Event added successfully.
+│Title          │Start Datetime │Duration       │Description    │Location      │
+│Meeting2       │2026-01-28T14:0│1h30m          │Team meeting   │Conference    │
+│               │0              │               │               │Room          │
+│Title          │Start Datetime │Duration       │Description    │Location      │
+│Meeting        │2023-10-10T14:0│1h30m          │Team meeting   │Conference    │
+│               │0              │               │               │Room          │
+│Meeting2       │2026-01-28T14:0│1h30m          │Team meeting   │Conference    │
+│               │0              │               │               │Room          │
+Event added successfully.
+│Title          │Start Datetime │Duration       │Description    │Location      │
+│Meeting        │2023-10-10T14:0│1h30m          │Team meeting   │Conference    │
+│               │0              │               │               │Room          │
+Event added successfully.
+│Title          │Start Datetime │Duration       │Description    │Location      │
+│Meeting2       │2026-01-28T14:0│1h30m          │Team meeting   │Conference    │
+│               │0              │               │               │Room          │
+│Title          │Start Datetime │Duration       │Description    │Location      │
+│Meeting2       │2026-01-28T14:0│1h30m          │Team meeting   │Conference    │
+│               │0              │               │               │Room          │
+Event added successfully.
+│Title          │Start Datetime │Duration       │Description    │Location      │
+│Meeting        │2023-10-10T14:0│1h30m          │Team meeting   │Conference    │
+│               │0              │               │               │Room          │
+Event added successfully.
+│Title          │Start Datetime │Duration       │Description    │Location      │
+│Meeting2       │2026-01-28T14:0│1h30m          │Team meeting   │Conference    │
+│               │0              │               │               │Room          │
+No events found.
+Event added successfully.
+│Title          │Start Datetime │Duration       │Description    │Location      │
+│Meeting        │2023-10-10T14:0│1h30m          │Team meeting   │Conference    │
+│               │0              │               │               │Room          │
+Event added successfully.
+│Title          │Start Datetime │Duration       │Description    │Location      │
+│Meeting2       │2026-01-28T14:0│1h30m          │Team meeting   │Conference    │
+│               │0              │               │               │Room          │
+│Title          │Start Datetime │Duration       │Description    │Location      │
+│Meeting        │2023-10-10T14:0│1h30m          │Team meeting   │Conference    │
+│               │0              │               │               │Room          │
+Event added successfully.
+│Title          │Start Datetime │Duration       │Description    │Location      │
+│Meeting        │2023-10-10T14:0│1h30m          │Team meeting   │Conference    │
+│               │0              │               │               │Room          │
+Event added successfully.
+│Title          │Start Datetime │Duration       │Description    │Location      │
+│Meeting2       │2026-01-28T14:0│1h30m          │Team meeting   │Conference    │
+│               │0              │               │               │Room          │
+]]></system-out>
+  <system-err><![CDATA[Error: Invalid date format "2023--10". Please use YYYY-MM-DD.
+]]></system-err>
+</testsuite>

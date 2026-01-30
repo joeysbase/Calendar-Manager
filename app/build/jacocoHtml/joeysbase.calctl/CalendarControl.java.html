@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>CalendarControl.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">app</a> &gt; <a href="index.source.html" class="el_package">joeysbase.calctl</a> &gt; <span class="el_source">CalendarControl.java</span></div><h1>CalendarControl.java</h1><pre class="source lang-java linenums">package joeysbase.calctl;
+
+import java.util.concurrent.Callable;
+
+import picocli.CommandLine;
+import picocli.CommandLine.Command;
+import picocli.CommandLine.Option;
+
+/**
+ * The {@code CalendarControl} class serves as the entry point for the &quot;calctl&quot; command-line tool.
+ * This tool provides a simple interface for managing calendar events, including adding, editing,
+ * deleting, and searching for events. It supports various subcommands to perform these operations.
+ *
+ * &lt;p&gt;Features:
+ *
+ * &lt;ul&gt;
+ *   &lt;li&gt;Displays version information with the {@code -v} or {@code --version} option.
+ *   &lt;li&gt;Supports disabling colored output with the {@code --no-color} option.
+ *   &lt;li&gt;Allows forcing operations without confirmation using the {@code --force} option.
+ * &lt;/ul&gt;
+ *
+ * &lt;p&gt;Subcommands:
+ *
+ * &lt;ul&gt;
+ *   &lt;li&gt;{@code Add} - Add a new event to the calendar.
+ *   &lt;li&gt;{@code Agenda} - Display a list of upcoming events.
+ *   &lt;li&gt;{@code Delete} - Remove an event from the calendar.
+ *   &lt;li&gt;{@code Edit} - Modify an existing event.
+ *   &lt;li&gt;{@code ListCommand} - List all events in the calendar.
+ *   &lt;li&gt;{@code Search} - Search for events based on criteria.
+ *   &lt;li&gt;{@code Show} - Show details of a specific event.
+ * &lt;/ul&gt;
+ *
+ * &lt;p&gt;Usage:
+ *
+ * &lt;pre&gt;
+ *   java -jar calctl.jar [OPTIONS] [SUBCOMMAND]
+ * &lt;/pre&gt;
+ *
+ * &lt;p&gt;The {@code CalendarControl} class initializes the {@code EventEngine} to manage calendar data
+ * and delegates execution to the appropriate subcommand.
+ *
+ * @version 0.1.0
+ */
+@Command(
+    name = &quot;calctl&quot;,
+    mixinStandardHelpOptions = true,
+    version = &quot;calctl 0.1.0&quot;,
+    description = &quot;A simple calendar command line tool&quot;,
+    subcommands = {
+      Add.class,
+      Agenda.class,
+      Delete.class,
+      Edit.class,
+      ListCommand.class,
+      Search.class,
+      Show.class
+    })
+@SuppressWarnings(&quot;PMD&quot;)
+<span class="fc" id="L60">public class CalendarControl implements Callable&lt;Integer&gt; {</span>
+
+  @Option(
+      names = {&quot;--no-color&quot;},
+      description = &quot;Disable colored output&quot;)
+  boolean noColor;
+
+  @Option(
+      names = {&quot;--force&quot;},
+      description = &quot;Force operation without confirmation&quot;)
+  boolean force;
+
+  EventEngine eventEngine;
+
+  /** Init command. */
+  public static void main(String[] args) {
+<span class="nc" id="L76">    int exitCode = new CommandLine(new CalendarControl()).execute(args);</span>
+<span class="nc" id="L77">    System.exit(exitCode);</span>
+<span class="nc" id="L78">  }</span>
+
+  /**
+   * Executes the run method, which initializes the event engine by loading its state from a
+   * persistent source. This method is typically called when the associated thread is started.
+   */
+  @Override
+  public Integer call() {
+<span class="nc" id="L86">    System.out.println(&quot;Hello from calctl, you can use --help to find out how to use.&quot;);</span>
+<span class="nc" id="L87">    System.out.println(&quot;Or visit Github page for examples.&quot;);</span>
+<span class="nc" id="L88">    return 0;</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span></div></body></html>

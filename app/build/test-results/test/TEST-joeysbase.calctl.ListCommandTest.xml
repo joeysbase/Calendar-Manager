@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="joeysbase.calctl.ListCommandTest" tests="10" skipped="0" failures="0" errors="0" timestamp="2026-01-30T19:56:10.907Z" hostname="ishis-MacBook-Air.local" time="0.224">
+  <properties/>
+  <testcase name="testListEventsFromDate()" classname="joeysbase.calctl.ListCommandTest" time="0.028"/>
+  <testcase name="testListEventsToDate()" classname="joeysbase.calctl.ListCommandTest" time="0.034"/>
+  <testcase name="testListTodayEvents()" classname="joeysbase.calctl.ListCommandTest" time="0.016"/>
+  <testcase name="testListThisWeekEvents()" classname="joeysbase.calctl.ListCommandTest" time="0.012"/>
+  <testcase name="testListEventsFromAndToDate()" classname="joeysbase.calctl.ListCommandTest" time="0.05"/>
+  <testcase name="testNoEventsFound()" classname="joeysbase.calctl.ListCommandTest" time="0.018"/>
+  <testcase name="testListAllEvents()" classname="joeysbase.calctl.ListCommandTest" time="0.015"/>
+  <testcase name="testFromDateAfterToDate()" classname="joeysbase.calctl.ListCommandTest" time="0.021"/>
+  <testcase name="testInvalidToDate()" classname="joeysbase.calctl.ListCommandTest" time="0.015"/>
+  <testcase name="testInvalidFromDate()" classname="joeysbase.calctl.ListCommandTest" time="0.012"/>
+  <system-out><![CDATA[Event added successfully.
+│Title          │Start Datetime │Duration       │Description    │Location      │
+│Meeting        │2023-10-10T14:0│1h30m          │Team meeting   │Conference    │
+│               │0              │               │               │Room          │
+Event added successfully.
+│Title          │Start Datetime │Duration       │Description    │Location      │
+│Meeting2       │2026-01-28T14:0│1h30m          │Team meeting   │Conference    │
+│               │0              │               │               │Room          │
+Event added successfully.
+│Title          │Start Datetime │Duration       │Description    │Location      │
+│Meeting7       │2026-01-30T14:0│1h30m          │Team meeting   │Conference    │
+│               │0              │               │               │Room          │
+Event added successfully.
+│Title          │Start Datetime │Duration       │Description    │Location      │
+│Meeting3       │2026-02-28T14:0│1h30m          │Team meeting   │Conference    │
+│               │0              │               │               │Room          │
+│Title          │Start Datetime │Duration       │Description    │Location      │
+│Meeting3       │2026-02-28T14:0│1h30m          │Team meeting   │Conference    │
+│               │0              │               │               │Room          │
+│Meeting7       │2026-01-30T14:0│1h30m          │Team meeting   │Conference    │
+│               │0              │               │               │Room          │
+│Meeting2       │2026-01-28T14:0│1h30m          │Team meeting   │Conference    │
+│               │0              │               │               │Room          │
+Event added successfully.
+│Title          │Start Datetime │Duration       │Description    │Location      │
+│Meeting        │2023-10-10T14:0│1h30m          │Team meeting   │Conference    │
+│               │0              │               │               │Room          │
+Event added successfully.
+│Title          │Start Datetime │Duration       │Description    │Location      │
+│Meeting2       │2026-01-28T14:0│1h30m          │Team meeting   │Conference    │
+│               │0              │               │               │Room          │
+Event added successfully.
+│Title          │Start Datetime │Duration       │Description    │Location      │
+│Meeting7       │2026-01-30T14:0│1h30m          │Team meeting   │Conference    │
+│               │0              │               │               │Room          │
+Event added successfully.
+│Title          │Start Datetime │Duration       │Description    │Location      │
+│Meeting3       │2026-02-28T14:0│1h30m          │Team meeting   │Conference    │
+│               │0              │               │               │Room          │
+│Title          │Start Datetime │Duration       │Description    │Location      │
+│Meeting        │2023-10-10T14:0│1h30m          │Team meeting   │Conference    │
+│               │0              │               │               │Room          │
+Event added successfully.
+│Title          │Start Datetime │Duration       │Description    │Location      │
+│Meeting        │2023-10-10T14:0│1h30m          │Team meeting   │Conference    │
+│               │0              │               │               │Room          │
+Event added successfully.
+│Title          │Start Datetime │Duration       │Description    │Location      │
+│Meeting2       │2026-01-28T14:0│1h30m          │Team meeting   │Conference    │
+│               │0              │               │               │Room          │
+Event added successfully.
+│Title          │Start Datetime │Duration       │Description    │Location      │
+│Meeting7       │2026-01-30T14:0│1h30m          │Team meeting   │Conference    │
+│               │0              │               │               │Room          │
+Event added successfully.
+│Title          │Start Datetime │Duration       │Description    │Location      │
+│Meeting3       │2026-02-28T14:0│1h30m          │Team meeting   │Conference    │
+│               │0              │               │               │Room          │
+│Title          │Start Datetime │Duration       │Description    │Location      │
+│Meeting7       │2026-01-30T14:0│1h30m          │Team meeting   │Conference    │
+│               │0              │               │               │Room          │
+Event added successfully.
+│Title          │Start Datetime │Duration       │Description    │Location      │
+│Meeting        │2023-10-10T14:0│1h30m          │Team meeting   │Conference    │
+│               │0              │               │               │Room          │
+Event added successfully.
+│Title          │Start Datetime │Duration       │Description    │Location      │
+│Meeting2       │2026-01-28T14:0│1h30m          │Team meeting   │Conference    │
+│               │0              │               │               │Room          │
+Event added successfully.
+│Title          │Start Datetime │Duration       │Description    │Location      │
+│Meeting7       │2026-01-30T14:0│1h30m          │Team meeting   │Conference    │
+│               │0              │               │               │Room          │
+Event added successfully.
+│Title          │Start Datetime │Duration       │Description    │Location      │
+│Meeting3       │2026-02-28T14:0│1h30m          │Team meeting   │Conference    │
+│               │0              │               │               │Room          │
+│Title          │Start Datetime │Duration       │Description    │Location      │
+│Meeting2       │2026-01-28T14:0│1h30m          │Team meeting   │Conference    │
+│               │0              │               │               │Room          │
+│Meeting7       │2026-01-30T14:0│1h30m          │Team meeting   │Conference    │
+│               │0              │               │               │Room          │
+Event added successfully.
+│Title          │Start Datetime │Duration       │Description    │Location      │
+│Meeting        │2023-10-10T14:0│1h30m          │Team meeting   │Conference    │
+│               │0              │               │               │Room          │
+Event added successfully.
+│Title          │Start Datetime │Duration       │Description    │Location      │
+│Meeting2       │2026-01-28T14:0│1h30m          │Team meeting   │Conference    │
+│               │0              │               │               │Room          │
+Event added successfully.
+│Title          │Start Datetime │Duration       │Description    │Location      │
+│Meeting7       │2026-01-30T14:0│1h30m          │Team meeting   │Conference    │
+│               │0              │               │               │Room          │
+Event added successfully.
+│Title          │Start Datetime │Duration       │Description    │Location      │
+│Meeting3       │2026-02-28T14:0│1h30m          │Team meeting   │Conference    │
+│               │0              │               │               │Room          │
+│Title          │Start Datetime │Duration       │Description    │Location      │
+│Meeting2       │2026-01-28T14:0│1h30m          │Team meeting   │Conference    │
+│               │0              │               │               │Room          │
+│Meeting7       │2026-01-30T14:0│1h30m          │Team meeting   │Conference    │
+│               │0              │               │               │Room          │
+│Meeting3       │2026-02-28T14:0│1h30m          │Team meeting   │Conference    │
+│               │0              │               │               │Room          │
+Event added successfully.
+│Title          │Start Datetime │Duration       │Description    │Location      │
+│Meeting        │2023-10-10T14:0│1h30m          │Team meeting   │Conference    │
+│               │0              │               │               │Room          │
+Event added successfully.
+│Title          │Start Datetime │Duration       │Description    │Location      │
+│Meeting2       │2026-01-28T14:0│1h30m          │Team meeting   │Conference    │
+│               │0              │               │               │Room          │
+Event added successfully.
+│Title          │Start Datetime │Duration       │Description    │Location      │
+│Meeting7       │2026-01-30T14:0│1h30m          │Team meeting   │Conference    │
+│               │0              │               │               │Room          │
+Event added successfully.
+│Title          │Start Datetime │Duration       │Description    │Location      │
+│Meeting3       │2026-02-28T14:0│1h30m          │Team meeting   │Conference    │
+│               │0              │               │               │Room          │
+No events found.
+Event added successfully.
+│Title          │Start Datetime │Duration       │Description    │Location      │
+│Meeting        │2023-10-10T14:0│1h30m          │Team meeting   │Conference    │
+│               │0              │               │               │Room          │
+Event added successfully.
+│Title          │Start Datetime │Duration       │Description    │Location      │
+│Meeting2       │2026-01-28T14:0│1h30m          │Team meeting   │Conference    │
+│               │0              │               │               │Room          │
+Event added successfully.
+│Title          │Start Datetime │Duration       │Description    │Location      │
+│Meeting7       │2026-01-30T14:0│1h30m          │Team meeting   │Conference    │
+│               │0              │               │               │Room          │
+Event added successfully.
+│Title          │Start Datetime │Duration       │Description    │Location      │
+│Meeting3       │2026-02-28T14:0│1h30m          │Team meeting   │Conference    │
+│               │0              │               │               │Room          │
+│Title          │Start Datetime │Duration       │Description    │Location      │
+│Meeting        │2023-10-10T14:0│1h30m          │Team meeting   │Conference    │
+│               │0              │               │               │Room          │
+│Meeting2       │2026-01-28T14:0│1h30m          │Team meeting   │Conference    │
+│               │0              │               │               │Room          │
+│Meeting7       │2026-01-30T14:0│1h30m          │Team meeting   │Conference    │
+│               │0              │               │               │Room          │
+│Meeting3       │2026-02-28T14:0│1h30m          │Team meeting   │Conference    │
+│               │0              │               │               │Room          │
+Event added successfully.
+│Title          │Start Datetime │Duration       │Description    │Location      │
+│Meeting        │2023-10-10T14:0│1h30m          │Team meeting   │Conference    │
+│               │0              │               │               │Room          │
+Event added successfully.
+│Title          │Start Datetime │Duration       │Description    │Location      │
+│Meeting2       │2026-01-28T14:0│1h30m          │Team meeting   │Conference    │
+│               │0              │               │               │Room          │
+Event added successfully.
+│Title          │Start Datetime │Duration       │Description    │Location      │
+│Meeting7       │2026-01-30T14:0│1h30m          │Team meeting   │Conference    │
+│               │0              │               │               │Room          │
+Event added successfully.
+│Title          │Start Datetime │Duration       │Description    │Location      │
+│Meeting3       │2026-02-28T14:0│1h30m          │Team meeting   │Conference    │
+│               │0              │               │               │Room          │
+Event added successfully.
+│Title          │Start Datetime │Duration       │Description    │Location      │
+│Meeting        │2023-10-10T14:0│1h30m          │Team meeting   │Conference    │
+│               │0              │               │               │Room          │
+Event added successfully.
+│Title          │Start Datetime │Duration       │Description    │Location      │
+│Meeting2       │2026-01-28T14:0│1h30m          │Team meeting   │Conference    │
+│               │0              │               │               │Room          │
+Event added successfully.
+│Title          │Start Datetime │Duration       │Description    │Location      │
+│Meeting7       │2026-01-30T14:0│1h30m          │Team meeting   │Conference    │
+│               │0              │               │               │Room          │
+Event added successfully.
+│Title          │Start Datetime │Duration       │Description    │Location      │
+│Meeting3       │2026-02-28T14:0│1h30m          │Team meeting   │Conference    │
+│               │0              │               │               │Room          │
+Event added successfully.
+│Title          │Start Datetime │Duration       │Description    │Location      │
+│Meeting        │2023-10-10T14:0│1h30m          │Team meeting   │Conference    │
+│               │0              │               │               │Room          │
+Event added successfully.
+│Title          │Start Datetime │Duration       │Description    │Location      │
+│Meeting2       │2026-01-28T14:0│1h30m          │Team meeting   │Conference    │
+│               │0              │               │               │Room          │
+Event added successfully.
+│Title          │Start Datetime │Duration       │Description    │Location      │
+│Meeting7       │2026-01-30T14:0│1h30m          │Team meeting   │Conference    │
+│               │0              │               │               │Room          │
+Event added successfully.
+│Title          │Start Datetime │Duration       │Description    │Location      │
+│Meeting3       │2026-02-28T14:0│1h30m          │Team meeting   │Conference    │
+│               │0              │               │               │Room          │
+]]></system-out>
+  <system-err><![CDATA[Error: Invalid date format "2026-02-29". Please use YYYY-MM-DD.
+Error: Invalid date format "2026-0-27". Please use YYYY-MM-DD.
+Error: Invalid date format "2026-0-27". Please use YYYY-MM-DD.
+]]></system-err>
+</testsuite>

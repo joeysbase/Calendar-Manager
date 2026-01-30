@@ -1,0 +1,131 @@
+package joeysbase.calctl;
+
+import java.io.ByteArrayOutputStream;
+import java.io.PrintWriter;
+import java.nio.file.Files;
+import java.nio.file.Path;
+
+import org.junit.jupiter.api.AfterEach;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import picocli.CommandLine;
+
+class SearchTest {
+
+  private PrintWriter err;
+  private CommandLine cmd;
+  private PrintWriter out;
+  private static final String EVENT_DATA_FILE =
+      System.getProperty("user.home") + "/.calctl/events.json";
+
+  @BeforeEach
+  void setUp() throws Exception {
+    err = new PrintWriter(new ByteArrayOutputStream(), true);
+    out = new PrintWriter(new ByteArrayOutputStream(), true);
+    cmd = new CommandLine(new CalendarControl()).setErr(err).setOut(out);
+    Path path = Path.of(EVENT_DATA_FILE);
+    if (Files.exists(path)) {
+      Files.delete(path);
+    }
+    int exitcode =
+        cmd.execute(
+            "add",
+            "--title",
+            "Meeting",
+            "--date",
+            "2023-10-10",
+            "--time",
+            "14:00",
+            "--duration",
+            "1h 30m",
+            "--description",
+            "Team meeting",
+            "--location",
+            "Conference Room");
+
+    exitcode =
+        cmd.execute(
+            "add",
+            "--title",
+            "Meeting2",
+            "--date",
+            "2026-01-28",
+            "--time",
+            "14:00",
+            "--duration",
+            "1h 30m",
+            "--description",
+            "Team meeting",
+            "--location",
+            "Conference Room");
+    exitcode =
+        cmd.execute(
+            "add",
+            "--title",
+            "Meeting7",
+            "--date",
+            "2026-01-30",
+            "--time",
+            "14:00",
+            "--duration",
+            "1h 30m",
+            "--description",
+            "Team meeting",
+            "--location",
+            "Conference Room");
+
+    exitcode =
+        cmd.execute(
+            "add",
+            "--title",
+            "Meeting3",
+            "--date",
+            "2026-02-28",
+            "--time",
+            "14:00",
+            "--duration",
+            "1h 30m",
+            "--description",
+            "Team meeting",
+            "--location",
+            "Conference Room");
+  }
+
+  @AfterEach
+  void cleanUp() throws Exception {
+    Path path = Path.of(EVENT_DATA_FILE);
+    if (Files.exists(path)) {
+      Files.delete(path);
+    }
+  }
+
+  @Test
+  void testSearchByTitleKeywordNoResults() {
+    int exitcode = cmd.execute("search", "--title", "car show");
+
+    assertEquals(0, exitcode);
+  }
+
+  @Test
+  void testSearchByGeneralKeywordWithResults() {
+    int exitcode = cmd.execute("search", "meeting");
+
+    assertEquals(0, exitcode);
+  }
+
+  @Test
+  void testSearchByGeneralKeywordNoResults() {
+    int exitcode = cmd.execute("search", "movie");
+
+    assertEquals(0, exitcode);
+  }
+
+  @Test
+  void testSearchWithNoKeyword() {
+    int exitcode = cmd.execute("search");
+
+    assertEquals(1, exitcode);
+  }
+}

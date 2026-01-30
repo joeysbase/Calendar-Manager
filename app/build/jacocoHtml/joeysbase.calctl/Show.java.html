@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Show.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">app</a> &gt; <a href="index.source.html" class="el_package">joeysbase.calctl</a> &gt; <span class="el_source">Show.java</span></div><h1>Show.java</h1><pre class="source lang-java linenums">package joeysbase.calctl;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.Callable;
+
+import picocli.CommandLine.Command;
+import picocli.CommandLine.Option;
+import picocli.CommandLine.Parameters;
+
+/**
+ * The {@code Show} class is a command-line utility for displaying details of a specific event. It
+ * is part of a calendar management application and provides options for outputting event details in
+ * either a human-readable format or JSON format. The class also checks for and displays any
+ * conflicts with other events.
+ *
+ * &lt;p&gt;Usage:
+ *
+ * &lt;ul&gt;
+ *   &lt;li&gt;Use the {@code -j} or {@code --json} option to output the event details in JSON format.
+ *   &lt;li&gt;If no event is found with the specified ID, an error message is displayed and the program
+ *       exits.
+ *   &lt;li&gt;If conflicts are detected with other events, a warning message is displayed along with the
+ *       conflicting events.
+ * &lt;/ul&gt;
+ *
+ * &lt;p&gt;Annotations:
+ *
+ * &lt;ul&gt;
+ *   &lt;li&gt;{@code @Command}: Specifies the name, description, and help options for the command.
+ *   &lt;li&gt;{@code @ParentCommand}: Links this command to its parent command, {@code CalendarControl}.
+ *   &lt;li&gt;{@code @Option}: Defines the command-line option for JSON output.
+ * &lt;/ul&gt;
+ *
+ * &lt;p&gt;Dependencies:
+ *
+ * &lt;ul&gt;
+ *   &lt;li&gt;{@code CalendarControl}: The parent command that provides access to the event engine.
+ *   &lt;li&gt;{@code Event}: Represents an event in the calendar.
+ *   &lt;li&gt;{@code PrettyEvent}: Utility class for formatting event details.
+ * &lt;/ul&gt;
+ *
+ * &lt;p&gt;Methods:
+ *
+ * &lt;ul&gt;
+ *   &lt;li&gt;{@code run()}: Executes the command, displaying event details and checking for conflicts.
+ * &lt;/ul&gt;
+ */
+@Command(
+    name = &quot;show&quot;,
+    description = &quot;Show details of a specific event&quot;,
+    mixinStandardHelpOptions = true)
+@SuppressWarnings(&quot;PMD&quot;)
+<span class="fc" id="L54">class Show implements Callable&lt;Integer&gt; {</span>
+
+  @Parameters(index = &quot;0&quot;, description = &quot;ID of the event to show.&quot;, defaultValue = &quot;&quot;)
+  String id;
+
+  @Option(
+      names = {&quot;-j&quot;, &quot;--json&quot;},
+      description = &quot;Output in JSON format&quot;)
+  boolean json;
+
+  /**
+   * Executes the logic to display an event based on its ID. If the event is not found, an error
+   * message is printed, and the program exits with a status of 1. If the event is found, it is
+   * displayed in either JSON format or a detailed pretty-printed format, depending on the `json`
+   * flag. Additionally, the method checks for conflicting events and displays a warning with
+   * details of the conflicting events if any are found.
+   *
+   * &lt;p&gt;Preconditions: - The `id` field must be set to the ID of the event to be displayed. - The
+   * `calendarControl` field must be initialized and provide access to the event engine.
+   *
+   * &lt;p&gt;Postconditions: - The event details are printed to the console. - If conflicts are detected,
+   * a warning with conflicting event details is printed. - The program exits with a status of 0 on
+   * success or 1 if the event is not found.
+   */
+  @Override
+  public Integer call() {
+    EventEngine eventEngine;
+    try {
+<span class="fc" id="L82">      eventEngine = EventEngine.load();</span>
+<span class="nc" id="L83">    } catch (Exception e) {</span>
+<span class="nc" id="L84">      System.err.println(&quot;Error: Unable to create event engine.&quot;);</span>
+<span class="nc" id="L85">      System.err.println(e.getMessage());</span>
+<span class="nc" id="L86">      return 1;</span>
+<span class="fc" id="L87">    }</span>
+<span class="pc bpc" id="L88" title="1 of 2 branches missed.">    if (eventEngine == null) {</span>
+<span class="nc" id="L89">      System.err.println(&quot;Error: Unable to initialize event engine.&quot;);</span>
+<span class="nc" id="L90">      return 1;</span>
+    }
+<span class="pc bpc" id="L92" title="1 of 2 branches missed.">    if(id.isEmpty()){</span>
+<span class="nc" id="L93">      System.err.println(&quot;Error: Please specify an id of event to show.&quot;);</span>
+<span class="nc" id="L94">      return 1;</span>
+    }
+<span class="fc" id="L96">    Event event = eventEngine.findById(id);</span>
+<span class="fc bfc" id="L97" title="All 2 branches covered.">    if (event == null) {</span>
+<span class="fc" id="L98">      System.err.println(&quot;Error: No event found with ID &quot; + &quot;\&quot;&quot; + id + &quot;\&quot;.&quot;);</span>
+<span class="fc" id="L99">      return 1;</span>
+    } else {
+<span class="fc bfc" id="L101" title="All 2 branches covered.">      if (json) {</span>
+<span class="fc" id="L102">        System.out.println(event.toJsonString());</span>
+      } else {
+<span class="fc" id="L104">        System.out.println(PrettyEvent.showEventsInDetail(new ArrayList&lt;&gt;(List.of(event))));</span>
+      }
+<span class="fc" id="L106">      List&lt;String&gt; conflictingEvents = eventEngine.checkConflicts(event);</span>
+<span class="fc bfc" id="L107" title="All 2 branches covered.">      if (!conflictingEvents.isEmpty()) {</span>
+<span class="fc" id="L108">        System.out.println(&quot;Warning: The following events conflict with this event:&quot;);</span>
+<span class="fc" id="L109">        System.out.println(PrettyEvent.showConflicts(eventEngine.findByIds(conflictingEvents)));</span>
+      }
+<span class="fc" id="L111">      return 0;</span>
+    }
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span></div></body></html>

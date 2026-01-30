@@ -1,0 +1,251 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>EventEngine.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">app</a> &gt; <a href="index.source.html" class="el_package">joeysbase.calctl</a> &gt; <span class="el_source">EventEngine.java</span></div><h1>EventEngine.java</h1><pre class="source lang-java linenums">package joeysbase.calctl;
+
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.stream.JsonReader;
+
+/**
+ * The EventEngine class manages a collection of events, providing functionality to load, save, add,
+ * remove, sort, and search events. It also supports conflict detection between events.
+ */
+@SuppressWarnings(&quot;PMD&quot;)
+class EventEngine {
+
+  private List&lt;Event&gt; events;
+<span class="fc" id="L27">  private static final String EVENT_DATA_FILE = System.getProperty(&quot;user.home&quot;) + &quot;/.calctl/events.json&quot;;</span>
+
+<span class="fc" id="L29">  private EventEngine(List&lt;Event&gt; events) {</span>
+<span class="fc" id="L30">    this.events = events;</span>
+<span class="fc" id="L31">  }</span>
+
+  static EventEngine load() throws Exception {
+
+<span class="fc" id="L35">    EventEngine eventEngine = null;</span>
+    try {
+<span class="fc" id="L37">      JsonReader reader = new JsonReader(new FileReader(EVENT_DATA_FILE));</span>
+<span class="fc" id="L38">      Gson gson =</span>
+          new GsonBuilder()
+<span class="fc" id="L40">              .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeTypeAdapter())</span>
+<span class="fc" id="L41">              .registerTypeAdapter(LocalDate.class, new LocalDateTypeAdapter())</span>
+<span class="fc" id="L42">              .create();</span>
+<span class="fc" id="L43">      eventEngine = gson.fromJson(reader, EventEngine.class);</span>
+<span class="fc" id="L44">      reader.close();</span>
+
+<span class="fc" id="L46">    } catch (FileNotFoundException e) {</span>
+<span class="fc" id="L47">      eventEngine = new EventEngine(new ArrayList&lt;&gt;());</span>
+<span class="nc" id="L48">    } catch (Exception e) {</span>
+<span class="nc" id="L49">      throw e;</span>
+<span class="fc" id="L50">    }</span>
+
+<span class="fc" id="L52">    return eventEngine;</span>
+  }
+
+  private void sortEvents() {
+<span class="fc" id="L56">    this.events.sort((Event o1, Event o2) -&gt; o1.compareTo(o2));</span>
+<span class="fc" id="L57">  }</span>
+
+  List&lt;String&gt; checkConflicts(Event newEvent) {
+<span class="fc" id="L60">    List&lt;String&gt; conflictingEventIds = new ArrayList&lt;&gt;();</span>
+<span class="fc bfc" id="L61" title="All 2 branches covered.">    for (Event event : this.events) {</span>
+<span class="fc bfc" id="L62" title="All 4 branches covered.">      if (event.isConflict(newEvent) &amp;&amp; !event.getId().equals(newEvent.getId())) {</span>
+<span class="fc" id="L63">        conflictingEventIds.add(event.getId());</span>
+      }
+<span class="fc" id="L65">    }</span>
+<span class="fc" id="L66">    return conflictingEventIds;</span>
+  }
+
+  void addEvent(Event event) {
+<span class="fc" id="L70">    this.events.add(event);</span>
+<span class="fc" id="L71">    sortEvents();</span>
+<span class="fc" id="L72">  }</span>
+
+  void toFile() throws Exception {
+<span class="fc" id="L75">    sortEvents();</span>
+    try {
+<span class="fc" id="L77">      Gson gson =</span>
+          new GsonBuilder()
+<span class="fc" id="L79">              .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeTypeAdapter())</span>
+<span class="fc" id="L80">              .registerTypeAdapter(LocalDate.class, new LocalDateTypeAdapter())</span>
+<span class="fc" id="L81">              .create();</span>
+<span class="fc" id="L82">      Path path = Path.of(EVENT_DATA_FILE);</span>
+<span class="fc" id="L83">      Files.createDirectories(path.getParent());</span>
+<span class="fc bfc" id="L84" title="All 2 branches covered.">      if (Files.notExists(path)) {</span>
+<span class="fc" id="L85">        Files.createFile(path);</span>
+        // System.out.println(&quot;Created new event data file at &quot; + EVENT_DATA_FILE);
+      }
+
+<span class="fc" id="L89">      FileWriter writer = new FileWriter(EVENT_DATA_FILE);</span>
+<span class="fc" id="L90">      gson.toJson(this, writer);</span>
+<span class="fc" id="L91">      writer.close();</span>
+<span class="nc" id="L92">    } catch (Exception e) {</span>
+<span class="nc" id="L93">      System.err.println(&quot;Error: Unable to write events to file.&quot;);</span>
+      // System.err.println(e);
+      // System.err.println(e.getMessage());
+<span class="nc" id="L96">      throw e;</span>
+<span class="fc" id="L97">    }</span>
+<span class="fc" id="L98">  }</span>
+
+  boolean removeById(String eventId) {
+<span class="nc" id="L101">    return removeByIds(new ArrayList&lt;&gt;(List.of(eventId)));</span>
+  }
+
+  boolean removeByDate(LocalDate date) {
+<span class="fc" id="L105">    return removeByDates(new ArrayList&lt;&gt;(List.of(date)));</span>
+  }
+
+  boolean removeByEvent(Event event) {
+<span class="fc" id="L109">    return removeByEvents(new ArrayList&lt;&gt;(List.of(event)));</span>
+  }
+
+  boolean removeByEvents(List&lt;Event&gt; eventsToRemove) {
+<span class="fc bfc" id="L113" title="All 2 branches covered.">    for (Event event : eventsToRemove) {</span>
+<span class="pc bpc" id="L114" title="1 of 2 branches missed.">      if (!this.events.contains(event)) {</span>
+<span class="nc" id="L115">        return false;</span>
+      }
+<span class="fc" id="L117">    }</span>
+<span class="fc bfc" id="L118" title="All 2 branches covered.">    for (Event event : eventsToRemove) {</span>
+<span class="fc" id="L119">      this.events.remove(event);</span>
+<span class="fc" id="L120">    }</span>
+<span class="fc" id="L121">    return true;</span>
+  }
+
+  boolean removeByIds(List&lt;String&gt; eventIds) {
+<span class="nc" id="L125">    Set&lt;String&gt; idSet = new HashSet&lt;&gt;(eventIds);</span>
+<span class="nc" id="L126">    int count = 0;</span>
+<span class="nc bnc" id="L127" title="All 2 branches missed.">    for (Event event : this.events) {</span>
+<span class="nc bnc" id="L128" title="All 2 branches missed.">      if (idSet.contains(event.getId())) {</span>
+<span class="nc" id="L129">        count++;</span>
+      }
+<span class="nc" id="L131">    }</span>
+<span class="nc bnc" id="L132" title="All 2 branches missed.">    if (count != eventIds.size()) {</span>
+<span class="nc" id="L133">      return false;</span>
+    }
+<span class="nc" id="L135">    List&lt;Event&gt; newEvents = new ArrayList&lt;&gt;();</span>
+<span class="nc bnc" id="L136" title="All 2 branches missed.">    for (Event event : this.events) {</span>
+<span class="nc bnc" id="L137" title="All 2 branches missed.">      if (!idSet.contains(event.getId())) {</span>
+<span class="nc" id="L138">        newEvents.add(event);</span>
+      }
+<span class="nc" id="L140">    }</span>
+<span class="nc" id="L141">    this.events = newEvents;</span>
+<span class="nc" id="L142">    return true;</span>
+  }
+
+  boolean removeByDates(List&lt;LocalDate&gt; dates) {
+<span class="fc" id="L146">    Set&lt;LocalDate&gt; dateSet = new HashSet&lt;&gt;(dates);</span>
+<span class="fc" id="L147">    int count = 0;</span>
+<span class="fc bfc" id="L148" title="All 2 branches covered.">    for (Event event : this.events) {</span>
+<span class="fc bfc" id="L149" title="All 2 branches covered.">      if (dateSet.contains(event.getStartDateTime().toLocalDate())) {</span>
+<span class="fc" id="L150">        count++;</span>
+      }
+<span class="fc" id="L152">    }</span>
+<span class="pc bpc" id="L153" title="1 of 2 branches missed.">    if (count != dates.size()) {</span>
+<span class="nc" id="L154">      return false;</span>
+    }
+<span class="fc" id="L156">    List&lt;Event&gt; newEvents = new ArrayList&lt;&gt;();</span>
+<span class="fc bfc" id="L157" title="All 2 branches covered.">    for (Event event : this.events) {</span>
+<span class="fc bfc" id="L158" title="All 2 branches covered.">      if (!dateSet.contains(event.getStartDateTime().toLocalDate())) {</span>
+<span class="fc" id="L159">        newEvents.add(event);</span>
+      }
+<span class="fc" id="L161">    }</span>
+<span class="fc" id="L162">    this.events = newEvents;</span>
+<span class="fc" id="L163">    return true;</span>
+  }
+
+  List&lt;Event&gt; findByIds(List&lt;String&gt; eventIds) {
+<span class="fc" id="L167">    Set&lt;String&gt; idSet = new HashSet&lt;&gt;(eventIds);</span>
+<span class="fc" id="L168">    List&lt;Event&gt; foundEvents = new ArrayList&lt;&gt;();</span>
+<span class="fc bfc" id="L169" title="All 2 branches covered.">    for (Event event : this.events) {</span>
+<span class="fc bfc" id="L170" title="All 2 branches covered.">      if (idSet.contains(event.getId())) {</span>
+<span class="fc" id="L171">        foundEvents.add(event);</span>
+      }
+<span class="fc" id="L173">    }</span>
+<span class="fc" id="L174">    return foundEvents;</span>
+  }
+
+  Event findById(String eventId) {
+<span class="fc" id="L178">    List&lt;Event&gt; foundEvents = findByIds(new ArrayList&lt;&gt;(List.of(eventId)));</span>
+<span class="fc bfc" id="L179" title="All 2 branches covered.">    if (foundEvents.isEmpty()) {</span>
+<span class="fc" id="L180">      return null;</span>
+    }
+<span class="fc" id="L182">    return foundEvents.get(0);</span>
+  }
+
+  List&lt;Event&gt; findByDate(LocalDate date) {
+<span class="fc" id="L186">    return findByDateRange(date, date);</span>
+  }
+
+  List&lt;Event&gt; findByDateRange(LocalDate from, LocalDate to) {
+<span class="fc" id="L190">    List&lt;Event&gt; foundEvents = new ArrayList&lt;&gt;();</span>
+<span class="fc bfc" id="L191" title="All 2 branches covered.">    for (Event event : this.events) {</span>
+<span class="fc" id="L192">      LocalDate eventDate = event.getStartDateTime().toLocalDate();</span>
+<span class="fc bfc" id="L193" title="All 4 branches covered.">      if (eventDate.compareTo(from) &gt;= 0 &amp;&amp; eventDate.compareTo(to) &lt;= 0) {</span>
+<span class="fc" id="L194">        foundEvents.add(event);</span>
+      }
+<span class="fc" id="L196">    }</span>
+<span class="fc" id="L197">    return foundEvents;</span>
+  }
+
+  List&lt;Event&gt; findByDateRange(LocalDate bound, boolean startLeft) {
+<span class="fc" id="L201">    List&lt;Event&gt; foundEvents = new ArrayList&lt;&gt;();</span>
+<span class="fc bfc" id="L202" title="All 2 branches covered.">    if (startLeft) {</span>
+<span class="pc bpc" id="L203" title="1 of 2 branches missed.">      for (Event event : this.events) {</span>
+<span class="fc" id="L204">        LocalDate eventDate = event.getStartDateTime().toLocalDate();</span>
+<span class="fc bfc" id="L205" title="All 2 branches covered.">        if (eventDate.compareTo(bound) &lt;= 0) {</span>
+<span class="fc" id="L206">          foundEvents.add(event);</span>
+        } else {
+          break;
+        }
+<span class="fc" id="L210">      }</span>
+    } else {
+<span class="pc bpc" id="L212" title="1 of 2 branches missed.">      for (Event event : this.events.reversed()) {</span>
+<span class="fc" id="L213">        LocalDate eventDate = event.getStartDateTime().toLocalDate();</span>
+<span class="fc bfc" id="L214" title="All 2 branches covered.">        if (eventDate.compareTo(bound) &gt;= 0) {</span>
+<span class="fc" id="L215">          foundEvents.add(event);</span>
+        } else {
+          break;
+        }
+<span class="fc" id="L219">      }</span>
+    }
+<span class="fc" id="L221">    return foundEvents;</span>
+  }
+
+  List&lt;Event&gt; searchInTitle(String keyword) {
+<span class="fc" id="L225">    keyword = keyword.toLowerCase();</span>
+<span class="fc" id="L226">    List&lt;Event&gt; result = new ArrayList&lt;&gt;();</span>
+<span class="fc bfc" id="L227" title="All 2 branches covered.">    for (Event event : this.events) {</span>
+<span class="pc bpc" id="L228" title="1 of 2 branches missed.">      if (event.getTitle().toLowerCase().contains(keyword)) {</span>
+<span class="nc" id="L229">        result.add(event);</span>
+      }
+<span class="fc" id="L231">    }</span>
+<span class="fc" id="L232">    return result;</span>
+  }
+
+  List&lt;Event&gt; searchInTitleAndDescription(String keyword) {
+<span class="fc" id="L236">    keyword = keyword.toLowerCase();</span>
+<span class="fc" id="L237">    List&lt;Event&gt; result = new ArrayList&lt;&gt;();</span>
+<span class="fc bfc" id="L238" title="All 2 branches covered.">    for (Event event : this.events) {</span>
+<span class="fc bfc" id="L239" title="All 2 branches covered.">      if (event.getTitle().toLowerCase().contains(keyword)</span>
+<span class="pc bpc" id="L240" title="1 of 2 branches missed.">          || event.getDescription().toLowerCase().contains(keyword)) {</span>
+<span class="fc" id="L241">        result.add(event);</span>
+      }
+<span class="fc" id="L243">    }</span>
+<span class="fc" id="L244">    return result;</span>
+  }
+
+  List&lt;Event&gt; getAllEvents() {
+<span class="fc" id="L248">    return this.events;</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span></div></body></html>

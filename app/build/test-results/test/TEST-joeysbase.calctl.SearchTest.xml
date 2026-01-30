@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="joeysbase.calctl.SearchTest" tests="4" skipped="0" failures="0" errors="0" timestamp="2026-01-30T19:56:11.131Z" hostname="ishis-MacBook-Air.local" time="0.064">
+  <properties/>
+  <testcase name="testSearchByGeneralKeywordNoResults()" classname="joeysbase.calctl.SearchTest" time="0.006"/>
+  <testcase name="testSearchByTitleKeywordNoResults()" classname="joeysbase.calctl.SearchTest" time="0.017"/>
+  <testcase name="testSearchByGeneralKeywordWithResults()" classname="joeysbase.calctl.SearchTest" time="0.021"/>
+  <testcase name="testSearchWithNoKeyword()" classname="joeysbase.calctl.SearchTest" time="0.018"/>
+  <system-out><![CDATA[Event added successfully.
+│Title          │Start Datetime │Duration       │Description    │Location      │
+│Meeting        │2023-10-10T14:0│1h30m          │Team meeting   │Conference    │
+│               │0              │               │               │Room          │
+Event added successfully.
+│Title          │Start Datetime │Duration       │Description    │Location      │
+│Meeting2       │2026-01-28T14:0│1h30m          │Team meeting   │Conference    │
+│               │0              │               │               │Room          │
+Event added successfully.
+│Title          │Start Datetime │Duration       │Description    │Location      │
+│Meeting7       │2026-01-30T14:0│1h30m          │Team meeting   │Conference    │
+│               │0              │               │               │Room          │
+Event added successfully.
+│Title          │Start Datetime │Duration       │Description    │Location      │
+│Meeting3       │2026-02-28T14:0│1h30m          │Team meeting   │Conference    │
+│               │0              │               │               │Room          │
+No events found with keyword "movie" in title or description.
+Event added successfully.
+│Title          │Start Datetime │Duration       │Description    │Location      │
+│Meeting        │2023-10-10T14:0│1h30m          │Team meeting   │Conference    │
+│               │0              │               │               │Room          │
+Event added successfully.
+│Title          │Start Datetime │Duration       │Description    │Location      │
+│Meeting2       │2026-01-28T14:0│1h30m          │Team meeting   │Conference    │
+│               │0              │               │               │Room          │
+Event added successfully.
+│Title          │Start Datetime │Duration       │Description    │Location      │
+│Meeting7       │2026-01-30T14:0│1h30m          │Team meeting   │Conference    │
+│               │0              │               │               │Room          │
+Event added successfully.
+│Title          │Start Datetime │Duration       │Description    │Location      │
+│Meeting3       │2026-02-28T14:0│1h30m          │Team meeting   │Conference    │
+│               │0              │               │               │Room          │
+No events found with title containing "car show".
+Event added successfully.
+│Title          │Start Datetime │Duration       │Description    │Location      │
+│Meeting        │2023-10-10T14:0│1h30m          │Team meeting   │Conference    │
+│               │0              │               │               │Room          │
+Event added successfully.
+│Title          │Start Datetime │Duration       │Description    │Location      │
+│Meeting2       │2026-01-28T14:0│1h30m          │Team meeting   │Conference    │
+│               │0              │               │               │Room          │
+Event added successfully.
+│Title          │Start Datetime │Duration       │Description    │Location      │
+│Meeting7       │2026-01-30T14:0│1h30m          │Team meeting   │Conference    │
+│               │0              │               │               │Room          │
+Event added successfully.
+│Title          │Start Datetime │Duration       │Description    │Location      │
+│Meeting3       │2026-02-28T14:0│1h30m          │Team meeting   │Conference    │
+│               │0              │               │               │Room          │
+Events found with keyword "meeting" in title or description:
+│ID       │Title    │Start    │Duration │Descripti│Location │Created  │Updated │
+│         │         │Datetime │         │on       │         │At       │At      │
+│evt-93153│Meeting  │2023-10-1│1h30m    │Team     │Conferenc│2026-01-3│2026-01-│
+│0237     │         │0T14:00  │         │meeting  │e Room   │0T11:56:1│30T11:56│
+│         │         │         │         │         │         │1        │:11     │
+│evt--3217│Meeting2 │2026-01-2│1h30m    │Team     │Conferenc│2026-01-3│2026-01-│
+│06463    │         │8T14:00  │         │meeting  │e Room   │0T11:56:1│30T11:56│
+│         │         │         │         │         │         │1        │:11     │
+│evt-10876│Meeting7 │2026-01-3│1h30m    │Team     │Conferenc│2026-01-3│2026-01-│
+│22909    │         │0T14:00  │         │meeting  │e Room   │0T11:56:1│30T11:56│
+│         │         │         │         │         │         │1        │:11     │
+│evt-83508│Meeting3 │2026-02-2│1h30m    │Team     │Conferenc│2026-01-3│2026-01-│
+│9729     │         │8T14:00  │         │meeting  │e Room   │0T11:56:1│30T11:56│
+│         │         │         │         │         │         │1        │:11     │
+Event added successfully.
+│Title          │Start Datetime │Duration       │Description    │Location      │
+│Meeting        │2023-10-10T14:0│1h30m          │Team meeting   │Conference    │
+│               │0              │               │               │Room          │
+Event added successfully.
+│Title          │Start Datetime │Duration       │Description    │Location      │
+│Meeting2       │2026-01-28T14:0│1h30m          │Team meeting   │Conference    │
+│               │0              │               │               │Room          │
+Event added successfully.
+│Title          │Start Datetime │Duration       │Description    │Location      │
+│Meeting7       │2026-01-30T14:0│1h30m          │Team meeting   │Conference    │
+│               │0              │               │               │Room          │
+Event added successfully.
+│Title          │Start Datetime │Duration       │Description    │Location      │
+│Meeting3       │2026-02-28T14:0│1h30m          │Team meeting   │Conference    │
+│               │0              │               │               │Room          │
+]]></system-out>
+  <system-err><![CDATA[Error: Please provide a keyword "calctl search <KEYWORD>" to search in title and description, or a title keyword "calctl search --title TITLE" to search in title only.
+]]></system-err>
+</testsuite>

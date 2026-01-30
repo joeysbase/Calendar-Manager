@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="joeysbase.calctl.DeleteTest" tests="8" skipped="0" failures="0" errors="0" timestamp="2026-01-30T19:56:10.594Z" hostname="ishis-MacBook-Air.local" time="0.181">
+  <properties/>
+  <testcase name="testDeleteByDateNoEventsFound()" classname="joeysbase.calctl.DeleteTest" time="0.015"/>
+  <testcase name="testDeleteByIdConfirmationAborted()" classname="joeysbase.calctl.DeleteTest" time="0.055"/>
+  <testcase name="testDeleteByDateSuccess()" classname="joeysbase.calctl.DeleteTest" time="0.01"/>
+  <testcase name="testDeleteByIdSuccess()" classname="joeysbase.calctl.DeleteTest" time="0.029"/>
+  <testcase name="testDeleteByIdEventNotFound()" classname="joeysbase.calctl.DeleteTest" time="0.014"/>
+  <testcase name="testInvalidDateFormat()" classname="joeysbase.calctl.DeleteTest" time="0.02"/>
+  <testcase name="testDeleteByDateConfirmationAborted()" classname="joeysbase.calctl.DeleteTest" time="0.011"/>
+  <testcase name="testDryRunMode()" classname="joeysbase.calctl.DeleteTest" time="0.026"/>
+  <system-out><![CDATA[Event added successfully.
+│Title          │Start Datetime │Duration       │Description    │Location      │
+│Meeting        │2023-10-10T14:0│1h30m          │Team meeting   │Conference    │
+│               │0              │               │               │Room          │
+Event added successfully.
+│Title          │Start Datetime │Duration       │Description    │Location      │
+│Meeting2       │2026-01-28T14:0│1h30m          │Team meeting   │Conference    │
+│               │0              │               │               │Room          │
+Event added successfully.
+│Title          │Start Datetime │Duration       │Description    │Location      │
+│Meeting        │2023-10-10T14:0│1h30m          │Team meeting   │Conference    │
+│               │0              │               │               │Room          │
+Event added successfully.
+│Title          │Start Datetime │Duration       │Description    │Location      │
+│Meeting2       │2026-01-28T14:0│1h30m          │Team meeting   │Conference    │
+│               │0              │               │               │Room          │
+Are you sure you want to delete the following event? (y/n)
+You can use calctl --force to skip this confirmation.
+│Title          │Start Datetime │Duration       │Description    │Location      │
+│Meeting        │2023-10-10T14:0│1h30m          │Team meeting   │Conference    │
+│               │0              │               │               │Room          │
+Aborting delete operation.
+Event added successfully.
+│Title          │Start Datetime │Duration       │Description    │Location      │
+│Meeting        │2023-10-10T14:0│1h30m          │Team meeting   │Conference    │
+│               │0              │               │               │Room          │
+Event added successfully.
+│Title          │Start Datetime │Duration       │Description    │Location      │
+│Meeting2       │2026-01-28T14:0│1h30m          │Team meeting   │Conference    │
+│               │0              │               │               │Room          │
+Are you sure you want to delete the following events? (y/n)
+You can use calctl --force to skip this confirmation.
+│Title          │Start Datetime │Duration       │Description    │Location      │
+│Meeting        │2023-10-10T14:0│1h30m          │Team meeting   │Conference    │
+│               │0              │               │               │Room          │
+The following events were deleted successfully.
+│Title          │Start Datetime │Duration       │Description    │Location      │
+│Meeting        │2023-10-10T14:0│1h30m          │Team meeting   │Conference    │
+│               │0              │               │               │Room          │
+Event added successfully.
+│Title          │Start Datetime │Duration       │Description    │Location      │
+│Meeting        │2023-10-10T14:0│1h30m          │Team meeting   │Conference    │
+│               │0              │               │               │Room          │
+Event added successfully.
+│Title          │Start Datetime │Duration       │Description    │Location      │
+│Meeting2       │2026-01-28T14:0│1h30m          │Team meeting   │Conference    │
+│               │0              │               │               │Room          │
+Are you sure you want to delete the following event? (y/n)
+You can use calctl --force to skip this confirmation.
+│Title          │Start Datetime │Duration       │Description    │Location      │
+│Meeting        │2023-10-10T14:0│1h30m          │Team meeting   │Conference    │
+│               │0              │               │               │Room          │
+The following events were deleted successfully.
+│Title          │Start Datetime │Duration       │Description    │Location      │
+│Meeting        │2023-10-10T14:0│1h30m          │Team meeting   │Conference    │
+│               │0              │               │               │Room          │
+Event added successfully.
+│Title          │Start Datetime │Duration       │Description    │Location      │
+│Meeting        │2023-10-10T14:0│1h30m          │Team meeting   │Conference    │
+│               │0              │               │               │Room          │
+Event added successfully.
+│Title          │Start Datetime │Duration       │Description    │Location      │
+│Meeting2       │2026-01-28T14:0│1h30m          │Team meeting   │Conference    │
+│               │0              │               │               │Room          │
+Event added successfully.
+│Title          │Start Datetime │Duration       │Description    │Location      │
+│Meeting        │2023-10-10T14:0│1h30m          │Team meeting   │Conference    │
+│               │0              │               │               │Room          │
+Event added successfully.
+│Title          │Start Datetime │Duration       │Description    │Location      │
+│Meeting2       │2026-01-28T14:0│1h30m          │Team meeting   │Conference    │
+│               │0              │               │               │Room          │
+Event added successfully.
+│Title          │Start Datetime │Duration       │Description    │Location      │
+│Meeting        │2023-10-10T14:0│1h30m          │Team meeting   │Conference    │
+│               │0              │               │               │Room          │
+Event added successfully.
+│Title          │Start Datetime │Duration       │Description    │Location      │
+│Meeting2       │2026-01-28T14:0│1h30m          │Team meeting   │Conference    │
+│               │0              │               │               │Room          │
+Are you sure you want to delete the following events? (y/n)
+You can use calctl --force to skip this confirmation.
+│Title          │Start Datetime │Duration       │Description    │Location      │
+│Meeting        │2023-10-10T14:0│1h30m          │Team meeting   │Conference    │
+│               │0              │               │               │Room          │
+Aborting delete operation.
+Event added successfully.
+│Title          │Start Datetime │Duration       │Description    │Location      │
+│Meeting        │2023-10-10T14:0│1h30m          │Team meeting   │Conference    │
+│               │0              │               │               │Room          │
+Event added successfully.
+│Title          │Start Datetime │Duration       │Description    │Location      │
+│Meeting2       │2026-01-28T14:0│1h30m          │Team meeting   │Conference    │
+│               │0              │               │               │Room          │
+Are you sure you want to delete the following events? (y/n)
+You can use calctl --force to skip this confirmation.
+│Title          │Start Datetime │Duration       │Description    │Location      │
+│Meeting        │2023-10-10T14:0│1h30m          │Team meeting   │Conference    │
+│               │0              │               │               │Room          │
+Dry run enabled. No changes were made to the following events.
+│Title          │Start Datetime │Duration       │Description    │Location      │
+│Meeting        │2023-10-10T14:0│1h30m          │Team meeting   │Conference    │
+│               │0              │               │               │Room          │
+]]></system-out>
+  <system-err><![CDATA[Error: No events found on date "2023-10-15".
+Error: No event found with ID "evt-37".
+Error: Invalid date format "2023-1010". Please use YYYY-MM-DD.
+]]></system-err>
+</testsuite>

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<checkstyle version="10.24.0">
+<file name="/Users/shizhongyi/myfiles/CS7580/hw3-joeysbase/app/src/test/java/joeysbase/calctl/AgendaTest.java">
+</file>
+<file name="/Users/shizhongyi/myfiles/CS7580/hw3-joeysbase/app/src/test/java/joeysbase/calctl/ListCommandTest.java">
+</file>
+<file name="/Users/shizhongyi/myfiles/CS7580/hw3-joeysbase/app/src/test/java/joeysbase/calctl/EventTest.java">
+</file>
+<file name="/Users/shizhongyi/myfiles/CS7580/hw3-joeysbase/app/src/test/java/joeysbase/calctl/SearchTest.java">
+</file>
+<file name="/Users/shizhongyi/myfiles/CS7580/hw3-joeysbase/app/src/test/java/joeysbase/calctl/ShowTest.java">
+</file>
+<file name="/Users/shizhongyi/myfiles/CS7580/hw3-joeysbase/app/src/test/java/joeysbase/calctl/DeleteTest.java">
+</file>
+<file name="/Users/shizhongyi/myfiles/CS7580/hw3-joeysbase/app/src/test/java/joeysbase/calctl/EditTest.java">
+</file>
+<file name="/Users/shizhongyi/myfiles/CS7580/hw3-joeysbase/app/src/test/java/joeysbase/calctl/AddTest.java">
+</file>
+</checkstyle>

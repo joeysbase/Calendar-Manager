@@ -1,0 +1,9 @@
+v0.0.2 - maintenance - 2017-04-04
+---------------------------------
+* moved the package interfaces to skb-interfaces, added the new dependency
+
+
+v0.0.1 - initial release - 2016-03-08
+-------------------------------------
+* original release with some translations for characthers, HTML element, and combined translations.
+* bundle released on Maven Central and source in GitHub

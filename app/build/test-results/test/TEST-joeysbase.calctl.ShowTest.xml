@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="joeysbase.calctl.ShowTest" tests="4" skipped="0" failures="0" errors="0" timestamp="2026-01-30T19:56:11.196Z" hostname="ishis-MacBook-Air.local" time="0.076">
+  <properties/>
+  <testcase name="testRunEventFoundPrettyOutput()" classname="joeysbase.calctl.ShowTest" time="0.012"/>
+  <testcase name="testRunEventFoundJsonOutput()" classname="joeysbase.calctl.ShowTest" time="0.025"/>
+  <testcase name="testRunEventWithConflicts()" classname="joeysbase.calctl.ShowTest" time="0.028"/>
+  <testcase name="testRunEventNotFound()" classname="joeysbase.calctl.ShowTest" time="0.009"/>
+  <system-out><![CDATA[Event added successfully.
+│Title          │Start Datetime │Duration       │Description    │Location      │
+│Meeting        │2023-10-10T14:0│1h30m          │Team meeting   │Conference    │
+│               │0              │               │               │Room          │
+Event added successfully.
+│Title          │Start Datetime │Duration       │Description    │Location      │
+│Meeting2       │2026-01-28T14:0│1h30m          │Team meeting   │Conference    │
+│               │0              │               │               │Room          │
+Event added successfully.
+│Title          │Start Datetime │Duration       │Description    │Location      │
+│Meeting7       │2026-01-30T14:0│1h30m          │Team meeting   │Conference    │
+│               │0              │               │               │Room          │
+Event added successfully.
+│Title          │Start Datetime │Duration       │Description    │Location      │
+│Meeting3       │2026-02-28T14:0│1h30m          │Team meeting   │Conference    │
+│               │0              │               │               │Room          │
+│ID       │Title    │Start    │Duration │Descripti│Location │Created  │Updated │
+│         │         │Datetime │         │on       │         │At       │At      │
+│evt-83508│Meeting3 │2026-02-2│1h30m    │Team     │Conferenc│2026-01-3│2026-01-│
+│9729     │         │8T14:00  │         │meeting  │e Room   │0T11:56:1│30T11:56│
+│         │         │         │         │         │         │1        │:11     │
+Event added successfully.
+│Title          │Start Datetime │Duration       │Description    │Location      │
+│Meeting        │2023-10-10T14:0│1h30m          │Team meeting   │Conference    │
+│               │0              │               │               │Room          │
+Event added successfully.
+│Title          │Start Datetime │Duration       │Description    │Location      │
+│Meeting2       │2026-01-28T14:0│1h30m          │Team meeting   │Conference    │
+│               │0              │               │               │Room          │
+Event added successfully.
+│Title          │Start Datetime │Duration       │Description    │Location      │
+│Meeting7       │2026-01-30T14:0│1h30m          │Team meeting   │Conference    │
+│               │0              │               │               │Room          │
+Event added successfully.
+│Title          │Start Datetime │Duration       │Description    │Location      │
+│Meeting3       │2026-02-28T14:0│1h30m          │Team meeting   │Conference    │
+│               │0              │               │               │Room          │
+{"id":"evt-835089729","title":"Meeting3","description":"Team meeting","startDateTime":"28::Feb::2026 14::00::00","duration":{"milliseconds":324000},"location":"Conference Room","timeCreated":"30::Jan::2026 11::56::11","timeUpdated":"30::Jan::2026 11::56::11"}
+Event added successfully.
+│Title          │Start Datetime │Duration       │Description    │Location      │
+│Meeting        │2023-10-10T14:0│1h30m          │Team meeting   │Conference    │
+│               │0              │               │               │Room          │
+Event added successfully.
+│Title          │Start Datetime │Duration       │Description    │Location      │
+│Meeting2       │2026-01-28T14:0│1h30m          │Team meeting   │Conference    │
+│               │0              │               │               │Room          │
+Event added successfully.
+│Title          │Start Datetime │Duration       │Description    │Location      │
+│Meeting7       │2026-01-30T14:0│1h30m          │Team meeting   │Conference    │
+│               │0              │               │               │Room          │
+Event added successfully.
+│Title          │Start Datetime │Duration       │Description    │Location      │
+│Meeting3       │2026-02-28T14:0│1h30m          │Team meeting   │Conference    │
+│               │0              │               │               │Room          │
+Warning: --force option is set. Skipping event conflicts checking.
+The event with ID "evt-931530237" was updated successfully.
+│ID       │Title    │Start    │Duration │Descripti│Location │Created  │Updated │
+│         │         │Datetime │         │on       │         │At       │At      │
+│evt-93153│new      │2026-01-2│1h30m    │Team     │Conferenc│2026-01-3│2026-01-│
+│0237     │Meeting  │8T14:00  │         │meeting  │e Room   │0T11:56:1│30T11:56│
+│         │         │         │         │         │         │1        │:11.2611│
+│         │         │         │         │         │         │         │62      │
+│ID       │Title    │Start    │Duration │Descripti│Location │Created  │Updated │
+│         │         │Datetime │         │on       │         │At       │At      │
+│evt--3217│Meeting2 │2026-01-2│1h30m    │Team     │Conferenc│2026-01-3│2026-01-│
+│06463    │         │8T14:00  │         │meeting  │e Room   │0T11:56:1│30T11:56│
+│         │         │         │         │         │         │1        │:11     │
+Warning: The following events conflict with this event:
+- "new Meeting" (2026-01-28T14:00 -> 2026-01-28T15:30)
+
+Event added successfully.
+│Title          │Start Datetime │Duration       │Description    │Location      │
+│Meeting        │2023-10-10T14:0│1h30m          │Team meeting   │Conference    │
+│               │0              │               │               │Room          │
+Event added successfully.
+│Title          │Start Datetime │Duration       │Description    │Location      │
+│Meeting2       │2026-01-28T14:0│1h30m          │Team meeting   │Conference    │
+│               │0              │               │               │Room          │
+Event added successfully.
+│Title          │Start Datetime │Duration       │Description    │Location      │
+│Meeting7       │2026-01-30T14:0│1h30m          │Team meeting   │Conference    │
+│               │0              │               │               │Room          │
+Event added successfully.
+│Title          │Start Datetime │Duration       │Description    │Location      │
+│Meeting3       │2026-02-28T14:0│1h30m          │Team meeting   │Conference    │
+│               │0              │               │               │Room          │
+]]></system-out>
+  <system-err><![CDATA[Error: No event found with ID "evt-8389729".
+]]></system-err>
+</testsuite>
